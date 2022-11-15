@@ -28,7 +28,7 @@ Resources:
         - IndexName: InspectionDateIndex
           KeySchema:
             - AttributeName: inspection_date
-              KeyType: RANGE
+              KeyType: HASH
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
