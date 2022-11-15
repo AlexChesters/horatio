@@ -1,0 +1,40 @@
+Description: DynamoDB infrastructure for Horatio
+Parameters:
+  Environment:
+    Description: The infrastructure environment
+    Type: String
+    AllowedValues:
+      - test
+      - live
+Resources:
+  ReportTable:
+    Type: AWS::DynamoDB::Table
+    # DeletionPolicy: Retain
+    # UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: partition_key
+          AttributeType: S
+        - AttributeName: inspection_date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: partition_key
+          KeyType: HASH
+        - AttributeName: inspection_date
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: InspectionDateIndex
+          KeySchema:
+            - AttributeName: inspection_date
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: !Sub "${Environment}-horatio-report-table"
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true

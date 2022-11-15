@@ -1,0 +1,65 @@
+Description: pipeline to deploy horatio common resources
+Resources:
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Type: S3
+        Location: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+      Name: horatio-common-resources
+      RestartExecutionOnUpdate: true
+      RoleArn: !ImportValue ci-infrastructure-codepipeline-base-execution-role
+      Stages:
+        - Name: Source
+          Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: "1"
+                Provider: CodeStarSourceConnection
+              OutputArtifacts:
+                - Name: GitHubSource
+              RunOrder: 1
+              Name: Clone-From-GitHub
+              Namespace: SourceVariables
+              Configuration:
+                ConnectionArn: !ImportValue ci-infrastructure-codestar-connection
+                FullRepositoryId: AlexChesters/horatio
+                BranchName: main
+                OutputArtifactFormat: CODE_ZIP
+        - Name: Deploy-To-Test
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: GitHubSource
+              RunOrder: 1
+              Name: DynamoDB
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: test-horatio-dynamo
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: GitHubSource::common-resources/stacks/dynamo.yml
+                TemplateConfiguration: GitHubSource::common-resources/stacks/parameters/dynamo/test.json
+        - Name: Deploy-To-Live
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: GitHubSource
+              RunOrder: 1
+              Name: DynamoDB
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: live-horatio-dynamo
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: GitHubSource::common-resources/stacks/dynamo.yml
+                TemplateConfiguration: GitHubSource::common-resources/stacks/parameters/dynamo/live.json
