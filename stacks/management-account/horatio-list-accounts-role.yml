@@ -1,0 +1,26 @@
+Description: IAM role for use by AlexChesters/horatio to allow account listing
+Resources:
+  LogGroupEnforcerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                # - arn:aws:iam::723247229166:role/cloudwatch-log-group-enforcer
+                - arn:aws:iam::723247229166:root
+              Service:
+                - lambda.amazonaws.com
+      RoleName: horatio-list-accounts-role
+      Policies:
+        - PolicyName: horatio-list-accounts-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - organizations:ListAccounts
+                Resource:
+                  - "*"
