@@ -21,6 +21,16 @@ Resources:
               - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: !Sub "${Environment}-horatio-inspector-execution-role"
+      Policies:
+        - PolicyName: horatio-inspector-execution-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource:
+                  - arn:aws:iam::008356366354:role/horatio-list-accounts-role
   Function:
     Type: AWS::Serverless::Function
     Properties:
