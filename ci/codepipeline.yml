@@ -1,4 +1,4 @@
-Description: pipeline to deploy horatio common resources
+Description: pipeline to deploy horatio
 Resources:
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -6,7 +6,7 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !ImportValue ci-infrastructure-build-artifacts-bucket-name
-      Name: horatio-common-resources
+      Name: horatio
       RestartExecutionOnUpdate: true
       RoleArn: !ImportValue ci-infrastructure-codepipeline-base-execution-role
       Stages:
@@ -27,7 +27,7 @@ Resources:
                 FullRepositoryId: AlexChesters/horatio
                 BranchName: main
                 OutputArtifactFormat: CODE_ZIP
-        - Name: Deploy-To-Test
+        - Name: Deploy-Common-Resources-To-Test
           Actions:
             - ActionTypeId:
                 Category: Deploy
@@ -45,7 +45,7 @@ Resources:
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: GitHubSource::common-resources/stacks/dynamo.yml
                 TemplateConfiguration: GitHubSource::common-resources/stacks/parameters/dynamo/test.json
-        - Name: Deploy-To-Live
+        - Name: Deploy-Common-Resources-To-Live
           Actions:
             - ActionTypeId:
                 Category: Deploy
