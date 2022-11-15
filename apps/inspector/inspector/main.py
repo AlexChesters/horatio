@@ -1,5 +1,7 @@
 import boto3
 
+from services import vpc
+
 def flatten(lst):
     return [item for sublist in lst for item in sublist]
 
@@ -36,3 +38,6 @@ def handler(event, _context):
         account_name = account["Name"]
 
         print(f"processing account {account_name} ({account_id})")
+
+        target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
+        vpc.inspect(target_account_credentials)
