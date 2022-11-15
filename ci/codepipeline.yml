@@ -43,8 +43,8 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
-                TemplatePath: GitHubSource::stacks/accounts-janitor-account/dynamo.yml
-                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/parameters/dynamo/test.json
+                TemplatePath: GitHubSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
+                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/test.json
         - Name: Deploy-Common-Resources-To-Live
           Actions:
             - ActionTypeId:
@@ -61,5 +61,5 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
-                TemplatePath: GitHubSource::stacks/accounts-janitor-account/dynamo.yml
-                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/parameters/dynamo/live.json
+                TemplatePath: GitHubSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
+                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/live.json

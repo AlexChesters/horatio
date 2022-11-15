@@ -38,5 +38,3 @@ Resources:
       TimeToLiveSpecification:
         AttributeName: ttl
         Enabled: true
-
-# organizations:ListAccounts
