@@ -41,7 +41,7 @@ Resources:
               Configuration:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                StackName: test-horatio-dynamo
+                StackName: test-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: GitHubSource::common-resources/stacks/dynamo.yml
                 TemplateConfiguration: GitHubSource::common-resources/stacks/parameters/dynamo/test.json
@@ -59,7 +59,7 @@ Resources:
               Configuration:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                StackName: live-horatio-dynamo
+                StackName: live-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: GitHubSource::common-resources/stacks/dynamo.yml
                 TemplateConfiguration: GitHubSource::common-resources/stacks/parameters/dynamo/live.json
