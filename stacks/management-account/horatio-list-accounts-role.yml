@@ -10,7 +10,8 @@ Resources:
             Effect: Allow
             Principal:
               AWS:
-                - arn:aws:iam::723247229166:role/horatio-inspector-execution-role
+                - arn:aws:iam::723247229166:role/test-horatio-inspector-execution-role
+                - arn:aws:iam::723247229166:role/live-horatio-inspector-execution-role
               Service:
                 - lambda.amazonaws.com
       RoleName: horatio-list-accounts-role
