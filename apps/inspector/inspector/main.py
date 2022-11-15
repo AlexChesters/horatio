@@ -3,7 +3,6 @@ import boto3
 def flatten(lst):
     return [item for sublist in lst for item in sublist]
 
-
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
     assumed_role_object = sts_client.assume_role(
