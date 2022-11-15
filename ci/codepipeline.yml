@@ -1,5 +1,41 @@
 Description: pipeline to deploy horatio
 Resources:
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+      ManagedPolicyArns:
+        - !ImportValue ci-infrastructure-codebuild-base-policy
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+        Location: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+        Path: /artifacts/horatio/
+        Packaging: NONE
+        Name: build
+        NamespaceType: BUILD_ID
+      TimeoutInMinutes: 5
+      Description: Builds horation
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Value: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+            Name: ARTIFACTS_BUCKET
+            Type: PLAINTEXT
+      Name: horation
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec.yml
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -27,6 +63,21 @@ Resources:
                 FullRepositoryId: AlexChesters/horatio
                 BranchName: main
                 OutputArtifactFormat: CODE_ZIP
+        - Name: Build-Lambdas
+          Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: "1"
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: GitHubSource
+              OutputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: CodeBuild
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
         - Name: Deploy-Common-Resources-To-Test
           Actions:
             - ActionTypeId:
@@ -35,7 +86,7 @@ Resources:
                 Version: "1"
                 Provider: CloudFormation
               InputArtifacts:
-                - Name: GitHubSource
+                - Name: BuiltSource
               RunOrder: 1
               Name: DynamoDB
               Configuration:
@@ -43,8 +94,26 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
-                TemplatePath: GitHubSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
-                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/test.json
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/test.json
+        - Name: Deploy-Lambdas-To-Test
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: Inspector
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: test-horatio-inspector
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/inspector.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/parameters/inspector/test.json
         - Name: Deploy-Common-Resources-To-Live
           Actions:
             - ActionTypeId:
@@ -53,7 +122,7 @@ Resources:
                 Version: "1"
                 Provider: CloudFormation
               InputArtifacts:
-                - Name: GitHubSource
+                - Name: BuiltSource
               RunOrder: 1
               Name: DynamoDB
               Configuration:
@@ -61,5 +130,23 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-common-resources-dynamo
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
-                TemplatePath: GitHubSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
-                TemplateConfiguration: GitHubSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/live.json
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/live.json
+        - Name: Deploy-Lambdas-To-Live
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: Inspector
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: live-horatio-inspector
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/inspector.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/parameters/inspector/live.json
