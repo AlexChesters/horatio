@@ -44,7 +44,10 @@ def handler(event, _context):
             continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
-        vpc.inspect(target_account_credentials)
+        vpc_results = vpc.inspect(target_account_credentials)
+
+        if vpc_results:
+            print(f"found vpc violations for {account_name}: {vpc_results}")
 
 if __name__ == "__main__":
     handler({}, None)
