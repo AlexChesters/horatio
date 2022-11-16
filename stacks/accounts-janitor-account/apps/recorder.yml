@@ -33,6 +33,11 @@ Resources:
                   - sqs:ReceiveMessage
                 Resource:
                   - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                Resource:
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-table-arn"
   Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -45,9 +50,9 @@ Resources:
       Timeout: 30
       Environment:
         Variables:
-          QUEUE_URL:
+          TABLE_NAME:
             Fn::ImportValue:
-              !Sub "${Environment}-horatio-report-queue-url"
+              !Sub "${Environment}-horatio-report-table-name"
       Events:
         ReportQueue:
           Type: SQS
