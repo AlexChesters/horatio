@@ -1,7 +1,10 @@
+import os
+import datetime
+import json
+
 import boto3
 
 from inspector.services import vpc
-from inspector.recorder import recorder
 
 from inspector.utils.flatten import flatten
 
@@ -10,6 +13,9 @@ MANAGEMENT_ACCOUNT_ID = "008356366354"
 SERVICE_MAP = {
     "VPC": vpc
 }
+
+sqs = boto3.resource("sqs")
+queue = sqs.Queue(os.environ["QUEUE_URL"])
 
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
@@ -52,11 +58,19 @@ def handler(event, _context):
             continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
-        vpc_results = service.inspect(target_account_credentials)
+        results = service.inspect(target_account_credentials)
 
-        for result in vpc_results:
-            # TODO: this should place the item on a queue instead
-            recorder.record(account_id, "no_default_vpc", result)
+        for result in results:
+            today = datetime.datetime.today()
+
+            queue.send_message(
+                MessageBody=json.dumps({
+                    "account_id": account_id,
+                    "rule_name": result["rule_name"],
+                    "inspection_date": f"{today.year}-{today.month}-{today.day}",
+                    "report": result["report"]
+                })
+            )
 
 if __name__ == "__main__":
     handler({}, None)

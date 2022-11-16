@@ -23,9 +23,12 @@ def inspect(credentials):
     for vpc in vpc_results:
         if vpc["IsDefault"]:
             results.append({
-                "message": "default VPC exists",
-                "details": {
-                    "vpc_id": vpc["VpcId"]
+                "rule_name": "default_vpc_exists",
+                "report": {
+                    "message": "default VPC exists in account",
+                    "details": {
+                        "vpc_id": vpc["VpcId"]
+                    }
                 }
             })
 
