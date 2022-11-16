@@ -32,11 +32,11 @@ Resources:
                 Resource:
                   - arn:aws:iam::008356366354:role/horatio-list-accounts-role
                   - arn:aws:iam::*:role/horatio-inspection-target-account-role
-              # - Effect: Allow
-              #   Action:
-              #     - sqs:SendMessage
-              #   Resource:
-              #     - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource:
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
   Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -47,10 +47,10 @@ Resources:
       FunctionName: !Sub "${Environment}-horatio-inspector"
       MemorySize: 256
       Timeout: 30
-      # Environment:
-      #   Variables:
-      #     QUEUE_URL:
-      #       Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-url"
+      Environment:
+        Variables:
+          QUEUE_URL:
+            Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-url"
   SchedulerRole:
     Type: AWS::IAM::Role
     Properties:

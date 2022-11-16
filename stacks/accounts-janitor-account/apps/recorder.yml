@@ -26,13 +26,13 @@ Resources:
         - PolicyName: horatio-recorder-execution-policy
           PolicyDocument:
             Statement:
-              # - Effect: Allow
-              #   Action:
-              #     - sqs:DeleteMessage
-              #     - sqs:GetQueueAttributes
-              #     - sqs:ReceiveMessage
-              #   Resource:
-              #     - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
+              - Effect: Allow
+                Action:
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                Resource:
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
               - Effect: Allow
                 Action:
                   - dynamodb:PutItem
@@ -53,9 +53,9 @@ Resources:
           TABLE_NAME:
             Fn::ImportValue:
               !Sub "${Environment}-horatio-report-table-name"
-      # Events:
-      #   ReportQueue:
-      #     Type: SQS
-      #     Properties:
-      #       Queue:
-      #         Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
+      Events:
+        ReportQueue:
+          Type: SQS
+          Properties:
+            Queue:
+              Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
