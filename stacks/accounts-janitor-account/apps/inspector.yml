@@ -43,7 +43,7 @@ Resources:
     Properties:
       Handler: inspector.main.handler
       Runtime: python3.9
-      CodeUri: ../../apps/inspector/build
+      CodeUri: ../../../apps/inspector/build
       Role: !GetAtt FunctionExecutionRole.Arn
       FunctionName: !Sub "${Environment}-horatio-inspector"
       MemorySize: 256
