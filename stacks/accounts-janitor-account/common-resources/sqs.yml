@@ -1,0 +1,29 @@
+Description: SQS infrastructure for Horatio
+Parameters:
+  Environment:
+    Description: The infrastructure environment
+    Type: String
+    AllowedValues:
+      - test
+      - live
+Resources:
+  ReportQueue:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      QueueName: !Sub "${Environment}-report-queue"
+      MessageRetentionPeriod: 259200
+Outputs:
+  QueueUrl:
+    Export:
+      Name: !Sub "${Environment}-horatio-report-queue-url"
+    Value: !Ref ReportQueue
+  QueueName:
+    Export:
+      Name: !Sub "${Environment}-horatio-report-queue-name"
+    Value: !GetAtt ReportQueue.QueueName
+  QueueArn:
+    Export:
+      Name: !Sub "${Environment}-horatio-report-queue-arn"
+    Value: !GetAtt ReportQueue.Arn

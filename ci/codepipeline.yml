@@ -96,6 +96,22 @@ Resources:
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/test.json
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: SQS
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: test-horatio-common-resources-sqs
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/sqs.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/sqs/test.json
         - Name: Deploy-Lambdas-To-Test
           Actions:
             - ActionTypeId:
@@ -132,6 +148,22 @@ Resources:
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/live.json
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: SQS
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: live-horatio-common-resources-sqs
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/sqs.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/sqs/live.json
         - Name: Deploy-Lambdas-To-Live
           Actions:
             - ActionTypeId:
