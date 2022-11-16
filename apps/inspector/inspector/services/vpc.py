@@ -1,5 +1,7 @@
 import boto3
 
+from inspector.utils.flatten import flatten
+
 def inspect(credentials):
     client = boto3.client(
         "ec2",
@@ -11,10 +13,10 @@ def inspect(credentials):
 
     paginator = client.get_paginator("describe_vpcs")
 
-    vpc_results = [
+    vpc_results = flatten([
         result["Vpcs"]
         for result in paginator.paginate()
-    ]
+    ])
 
     for vpc in vpc_results:
         print(f"found vpc: {vpc}")

@@ -1,11 +1,9 @@
 import boto3
 
 from inspector.services import vpc
+from inspector.utils.flatten import flatten
 
 MANAGEMENT_ACCOUNT_ID = "008356366354"
-
-def flatten(lst):
-    return [item for sublist in lst for item in sublist]
 
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
