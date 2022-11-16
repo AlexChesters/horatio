@@ -41,3 +41,6 @@ def handler(event, _context):
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
         vpc.inspect(target_account_credentials)
+
+if __name__ == "__main__":
+    handler({}, None)

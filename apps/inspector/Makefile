@@ -10,7 +10,7 @@ install:
 	)
 
 run:
-	AWS_PROFILE=personal poetry run python3 inspector/main.py
+	AWS_PROFILE=accounts-janitor poetry run python3 inspector/main.py
 
 test: install
 	( \
