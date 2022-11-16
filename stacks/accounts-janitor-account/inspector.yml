@@ -53,3 +53,10 @@ Resources:
           TABLE_NAME:
             Fn::ImportValue:
               !Sub "${Environment}-horatio-report-table-name"
+  VPCSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "${Environment}-horatio-inspector-vpc"
+      ScheduleExpression: at(2022-11-16T16:55:00)
+      Target:
+        Arn: !GetAtt Function.Arn
