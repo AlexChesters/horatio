@@ -36,8 +36,7 @@ Resources:
                 Action:
                   - sqs:SendMessage
                 Resource:
-                  - Fn::ImportValue:
-                      !Sub "${Environment}-horatio-report-queue-arn"
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-arn"
   Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -51,8 +50,7 @@ Resources:
       Environment:
         Variables:
           QUEUE_URL:
-            Fn::ImportValue:
-              !Sub "${Environment}-horatio-report-queue-url"
+            Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-url"
   SchedulerRole:
     Type: AWS::IAM::Role
     Properties:
