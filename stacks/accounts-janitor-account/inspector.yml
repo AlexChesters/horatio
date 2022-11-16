@@ -78,7 +78,7 @@ Resources:
     Type: AWS::Scheduler::Schedule
     Properties:
       Name: !Sub "${Environment}-horatio-inspector-vpc"
-      ScheduleExpression: at(2022-11-16T16:57:00)
+      ScheduleExpression: cron(30 20 * * ? *)
       FlexibleTimeWindow:
         Mode: "OFF"
       Target:
