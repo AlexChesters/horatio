@@ -51,5 +51,5 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME:
-            - Fn::ImportValue:
-                !Sub "${Environment}-horatio-report-table-name"
+            Fn::ImportValue:
+              !Sub "${Environment}-horatio-report-table-name"
