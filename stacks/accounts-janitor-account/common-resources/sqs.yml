@@ -19,7 +19,7 @@ Resources:
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
     Properties:
-      QueueName: !Sub "${Environment}-report-queue"
+      QueueName: !Sub "${Environment}-horatio-report-queue"
       MessageRetentionPeriod: 259200
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt DLQ.Arn
