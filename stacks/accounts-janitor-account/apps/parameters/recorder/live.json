@@ -1,0 +1,9 @@
+{
+  "Parameters": {
+    "Environment": "live"
+  },
+  "Tags": {
+    "Project": "horatio",
+    "Environment": "live"
+  }
+}

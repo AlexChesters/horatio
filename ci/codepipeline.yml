@@ -130,6 +130,22 @@ Resources:
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/inspector.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/inspector/test.json
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: Recorder
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: test-horatio-recorder
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/recorder.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/recorder/test.json
         - Name: Deploy-Common-Resources-To-Live
           Actions:
             - ActionTypeId:
@@ -182,3 +198,19 @@ Resources:
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/inspector.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/inspector/live.json
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: "1"
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuiltSource
+              RunOrder: 1
+              Name: Recorder
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                StackName: live-horatio-recorder
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/recorder.yml
+                TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/recorder/live.json
