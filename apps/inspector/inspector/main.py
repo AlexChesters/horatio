@@ -2,6 +2,8 @@ import boto3
 
 from inspector.services import vpc
 
+MANAGEMENT_ACCOUNT_ID = "008356366354"
+
 def flatten(lst):
     return [item for sublist in lst for item in sublist]
 
@@ -38,6 +40,10 @@ def handler(event, _context):
         account_name = account["Name"]
 
         print(f"processing account {account_name} ({account_id})")
+
+        if account_id == MANAGEMENT_ACCOUNT_ID:
+            print(f"{account_name} is management account, skipping")
+            continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
         vpc.inspect(target_account_credentials)
