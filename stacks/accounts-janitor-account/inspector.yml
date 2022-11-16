@@ -78,9 +78,13 @@ Resources:
     Type: AWS::Scheduler::Schedule
     Properties:
       Name: !Sub "${Environment}-horatio-inspector-vpc"
-      ScheduleExpression: at(2022-11-16T16:55:00)
+      ScheduleExpression: at(2022-11-16T16:57:00)
       FlexibleTimeWindow:
         Mode: "OFF"
       Target:
         Arn: !GetAtt Function.Arn
         RoleArn: !GetAtt SchedulerRole.Arn
+        Input: |
+          {
+            "CHECK_TYPE": "DEFAULT_VPC"
+          }
