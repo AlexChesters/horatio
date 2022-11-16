@@ -2,12 +2,15 @@
 
 clean:
 	cd apps/inspector && $(MAKE) clean
+	cd apps/recorder && $(MAKE) clean
 
 test:
 	cd apps/inspector && $(MAKE) test
+	cd apps/recorder && $(MAKE) test
 
 package:
 	cd apps/inspector && $(MAKE) package
+	cd apps/recorder && $(MAKE) package
 
 install_poetry:
 	( \

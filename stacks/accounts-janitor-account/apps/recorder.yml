@@ -1,0 +1,58 @@
+Transform: AWS::Serverless-2016-10-31
+Description: Infrastructure for horatio recorder
+Parameters:
+  Environment:
+    Description: The infrastructure environment
+    Type: String
+    AllowedValues:
+      - test
+      - live
+Resources:
+  FunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: !Sub "${Environment}-horatio-recorder-execution-role"
+      Policies:
+        - PolicyName: horatio-recorder-execution-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - sqs:ReceiveMessage
+                Resource:
+                  - Fn::ImportValue:
+                      !Sub "${Environment}-horatio-report-queue-arn"
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: recorder.main.handler
+      Runtime: python3.9
+      CodeUri: ../../../apps/recorder/build
+      Role: !GetAtt FunctionExecutionRole.Arn
+      FunctionName: !Sub "${Environment}-horatio-recorder"
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          QUEUE_URL:
+            Fn::ImportValue:
+              !Sub "${Environment}-horatio-report-queue-url"
+      Events:
+        ReportQueue:
+          Type: SQS
+          Properties:
+            Queue:
+              Fn::ImportValue:
+                !Sub "${Environment}-horatio-report-queue-url"
