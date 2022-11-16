@@ -7,6 +7,13 @@ Parameters:
       - test
       - live
 Resources:
+  DLQ:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      QueueName: !Sub "${Environment}-horatio-recorder-dlq"
+      MessageRetentionPeriod: 604800
   ReportQueue:
     Type: AWS::SQS::Queue
     DeletionPolicy: Delete
@@ -14,6 +21,9 @@ Resources:
     Properties:
       QueueName: !Sub "${Environment}-report-queue"
       MessageRetentionPeriod: 259200
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt DLQ.Arn
+        maxReceiveCount: 3
 Outputs:
   QueueUrl:
     Export:
