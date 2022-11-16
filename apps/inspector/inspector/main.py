@@ -1,6 +1,6 @@
 import boto3
 
-from services import vpc
+from inspector.services import vpc
 
 def flatten(lst):
     return [item for sublist in lst for item in sublist]
