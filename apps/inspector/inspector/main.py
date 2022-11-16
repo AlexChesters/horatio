@@ -49,6 +49,7 @@ def handler(event, _context):
         vpc_results = vpc.inspect(target_account_credentials)
 
         for result in vpc_results:
+            # TODO: this should place the item on a queue instead
             recorder.record(account_id, "no_default_vpc", result)
 
 if __name__ == "__main__":
