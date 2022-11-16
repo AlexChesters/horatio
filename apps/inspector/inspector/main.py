@@ -7,6 +7,10 @@ from inspector.utils.flatten import flatten
 
 MANAGEMENT_ACCOUNT_ID = "008356366354"
 
+SERVICE_MAP = {
+    "VPC": vpc
+}
+
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
     assumed_role_object = sts_client.assume_role(
@@ -17,6 +21,8 @@ def assume_role(role_arn):
 
 def handler(event, _context):
     print(f"handling event: {event}")
+
+    service = SERVICE_MAP[event["SERVICE"]]
 
     list_accounts_credentials = assume_role("arn:aws:iam::008356366354:role/horatio-list-accounts-role")
 
@@ -46,7 +52,7 @@ def handler(event, _context):
             continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
-        vpc_results = vpc.inspect(target_account_credentials)
+        vpc_results = service.inspect(target_account_credentials)
 
         for result in vpc_results:
             # TODO: this should place the item on a queue instead

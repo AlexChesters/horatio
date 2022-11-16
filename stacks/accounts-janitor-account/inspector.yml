@@ -86,5 +86,5 @@ Resources:
         RoleArn: !GetAtt SchedulerRole.Arn
         Input: |
           {
-            "CHECK_TYPE": "DEFAULT_VPC"
+            "SERVICE": "VPC"
           }
