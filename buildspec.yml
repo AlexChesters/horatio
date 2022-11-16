@@ -8,5 +8,6 @@ phases:
     commands:
       - make build
       - aws cloudformation package --template-file ./stacks/accounts-janitor-account/apps/inspector.yml --s3-bucket $ARTIFACTS_BUCKET --s3-prefix artifacts/horatio/inspector --output-template-file ./stacks/accounts-janitor-account/apps/inspector.yml
+      - aws cloudformation package --template-file ./stacks/accounts-janitor-account/apps/recorder.yml --s3-bucket $ARTIFACTS_BUCKET --s3-prefix artifacts/horatio/recorder --output-template-file ./stacks/accounts-janitor-account/apps/recorder.yml
 artifacts:
   files: "**/*"
