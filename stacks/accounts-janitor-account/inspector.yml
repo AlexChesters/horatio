@@ -32,6 +32,12 @@ Resources:
                 Resource:
                   - arn:aws:iam::008356366354:role/horatio-list-accounts-role
                   - arn:aws:iam::*:role/horatio-inspection-target-account-role
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                Resource:
+                  - Fn::ImportValue:
+                      !Sub "${Environment}-horatio-report-table-arn"
   Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -42,3 +48,8 @@ Resources:
       FunctionName: !Sub "${Environment}-horatio-inspector"
       MemorySize: 256
       Timeout: 30
+      Environment:
+        Variables:
+          TABLE_NAME:
+            - Fn::ImportValue:
+                !Sub "${Environment}-horatio-report-table-name"
