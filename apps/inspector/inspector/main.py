@@ -1,6 +1,8 @@
 import boto3
 
 from inspector.services import vpc
+from inspector.recorder import recorder
+
 from inspector.utils.flatten import flatten
 
 MANAGEMENT_ACCOUNT_ID = "008356366354"
@@ -46,8 +48,8 @@ def handler(event, _context):
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
         vpc_results = vpc.inspect(target_account_credentials)
 
-        if vpc_results:
-            print(f"found vpc violations for {account_name}: {vpc_results}")
+        for result in vpc_results:
+            recorder.record(account_id, "no_default_vpc", result)
 
 if __name__ == "__main__":
     handler({}, None)
