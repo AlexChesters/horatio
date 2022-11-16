@@ -86,3 +86,20 @@ Resources:
           {
             "SERVICE": "VPC"
           }
+  ErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      Period: 60
+      TreatMissingData: notBreaching
+      Statistic: Sum
+      Threshold: 0
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue notification-topic
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Function
