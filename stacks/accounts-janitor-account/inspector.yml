@@ -53,10 +53,34 @@ Resources:
           TABLE_NAME:
             Fn::ImportValue:
               !Sub "${Environment}-horatio-report-table-name"
+  SchedulerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - scheduler.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      RoleName: !Sub "${Environment}-horatio-inspector-scheduler-role"
+      Policies:
+        - PolicyName: horatio-inspector-scheduler-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !GetAtt Function.Arn
   VPCSchedule:
     Type: AWS::Scheduler::Schedule
     Properties:
       Name: !Sub "${Environment}-horatio-inspector-vpc"
       ScheduleExpression: at(2022-11-16T16:55:00)
+      FlexibleTimeWindow:
+        Mode: "OFF"
       Target:
         Arn: !GetAtt Function.Arn
+        RoleArn: !GetAtt SchedulerRole.Arn
