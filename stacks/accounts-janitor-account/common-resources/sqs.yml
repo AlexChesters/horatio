@@ -14,6 +14,21 @@ Resources:
     Properties:
       QueueName: !Sub "${Environment}-horatio-recorder-dlq"
       MessageRetentionPeriod: 604800
+  DLQNotEmptyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt DLQ.QueueName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !ImportValue notification-topic
   ReportQueue:
     Type: AWS::SQS::Queue
     DeletionPolicy: Delete
