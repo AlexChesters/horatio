@@ -18,7 +18,8 @@ def handler(event, _context):
     results = paginator.paginate(
         TableName=os.environ["TABLE_NAME"],
         IndexName="InspectionDateIndex",
-        Select="ALL_ATTRIBUTES",
+        Select="SPECIFIC_ATTRIBUTES",
+        ProjectionExpression="report",
         KeyConditionExpression="inspection_date = :today",
         ExpressionAttributeValues={
             ":today": {
