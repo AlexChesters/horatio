@@ -77,6 +77,7 @@ Resources:
     Properties:
       Name: !Sub "${Environment}-horatio-inspector-vpc"
       ScheduleExpression: cron(30 20 * * ? *)
+      ScheduleExpressionTimezone: Europe/London
       FlexibleTimeWindow:
         Mode: "OFF"
       Target:
