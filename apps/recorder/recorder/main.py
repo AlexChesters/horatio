@@ -18,6 +18,7 @@ def handler(event, _context):
 
         account_id = message_body["account_id"]
         rule_name = message_body["rule_name"]
+        region = message_body["region"]
         inspection_date = message_body["inspection_date"]
         report = message_body["report"]
 
@@ -25,6 +26,7 @@ def handler(event, _context):
             Item={
                 "partition_key": f"{account_id}|{rule_name}",
                 "inspection_date": inspection_date,
+                "region": region,
                 "report": report,
                 "ttl": int(thirty_days_from_today.timestamp())
             }

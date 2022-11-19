@@ -14,6 +14,9 @@ SERVICE_MAP = {
     "VPC": vpc
 }
 
+# TODO: check other regions
+REGIONS = ["eu-west-1"]
+
 sqs = boto3.resource("sqs")
 queue = sqs.Queue(os.environ["QUEUE_URL"])
 
@@ -58,22 +61,25 @@ def handler(event, _context):
             continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
-        results = service.inspect(target_account_credentials)
 
-        for result in results:
-            today = datetime.datetime.today()
+        for region in REGIONS:
+            results = service.inspect(target_account_credentials, region)
 
-            report = result["report"]
-            report["account_id"] = account_id
+            for result in results:
+                today = datetime.datetime.today()
 
-            queue.send_message(
-                MessageBody=json.dumps({
-                    "account_id": account_id,
-                    "rule_name": result["rule_name"],
-                    "inspection_date": f"{today.year}-{today.month}-{today.day}",
-                    "report": report
-                })
-            )
+                report = result["report"]
+                report["account_id"] = account_id
+
+                queue.send_message(
+                    MessageBody=json.dumps({
+                        "account_id": account_id,
+                        "rule_name": result["rule_name"],
+                        "region": region,
+                        "inspection_date": f"{today.year}-{today.month}-{today.day}",
+                        "report": report
+                    })
+                )
 
 if __name__ == "__main__":
     handler({}, None)
