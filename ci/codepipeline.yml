@@ -258,7 +258,7 @@ Resources:
               Configuration:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                StackName: live-horatio-recorder
+                StackName: live-horatio-reporter
                 RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/reporter.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/reporter/live.json
