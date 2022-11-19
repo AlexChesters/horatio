@@ -13,7 +13,7 @@ def generate_body(reports):
         resource_id = report["resource_id"]
 
         items.append(f"""
-        <h1>{message} ({account_id})</h1>
+        <h2>{message} ({account_id})</h2>
         <h3>Resource: {resource_id}</h3>
         <p>Remedy: {remedy}</p>
         """)
