@@ -6,7 +6,7 @@ def send_email(body):
     client.send_email(
         Source="horatio@alexchesters.com",
         Destination={
-            "ToAddresses": "alex@cheste.rs"
+            "ToAddresses": ["alex@cheste.rs"]
         },
         Message={
             "Subject": {
