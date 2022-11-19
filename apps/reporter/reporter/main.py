@@ -29,7 +29,7 @@ def handler(event, _context):
 
     results = flatten([result["Items"] for result in results])
 
-    for raw_result in raw_result:
+    for raw_result in results:
         result = deserialise(raw_result)
         print(f"result: {result}")
 
