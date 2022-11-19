@@ -20,7 +20,9 @@ def handler(event, _context):
         Select="ALL_ATTRIBUTES",
         KeyConditionExpression="inspection_date = :today",
         ExpressionAttributeValues={
-            ":today": f"{today.year}-{today.month}-{today.day}"
+            ":today": {
+                "S": f"{today.year}-{today.month}-{today.day}"
+            }
         }
     )
 
