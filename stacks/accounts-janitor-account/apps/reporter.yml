@@ -36,6 +36,18 @@ Resources:
                   - dynamodb:GetItem
                 Resource:
                   - Fn::ImportValue: !Sub "${Environment}-horatio-report-table-arn"
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                  - ses:SendRawEmail
+                Resource:
+                  - "*"
+                Condition:
+                  ForAllValues:StringLike:
+                    ses:Recipients:
+                      - alex@cheste.rs
+                  StringEquals:
+                    ses:FromAddress: horatio@alexchesters.com
   Function:
     Type: AWS::Serverless::Function
     Properties:

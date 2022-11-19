@@ -5,11 +5,12 @@ def generate_body(reports):
         report = item["report"]
 
         message = report["message"]
+        account_id = report["account_id"]
         remedy = report["remedy"]
         resource_id = report["resource_id"]
 
         items.append(f"""
-        <h1>{message}</h1>
+        <h1>{message} ({account_id})</h1>
         <h3>Resource: {resource_id}</h3>
         <p>Remedy: {remedy}</p>
         """)
