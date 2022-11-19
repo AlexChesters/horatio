@@ -3,23 +3,30 @@ import datetime
 
 import boto3
 
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.environ["TABLE_NAME"])
+from reporter.utils.flatten import flatten
+
+client = boto3.client("dynamodb")
 
 def handler(event, _context):
     print(f"handling event: {event}")
 
     today = datetime.datetime.today()
 
-    response = table.query(
+    paginator = client.get_paginator("query")
+
+    results = paginator.paginate(
+        TableName=os.environ["TABLE_NAME"],
         IndexName="InspectionDateIndex",
+        Select="ALL_ATTRIBUTES",
         KeyConditionExpression="inspection_date = :today",
         ExpressionAttributeValues={
             ":today": f"{today.year}-{today.month}-{today.day}"
         }
     )
 
-    print(f"response: {response}")
+    results = flatten([result["Items"] for result in results])
+
+    print(f"results: {results}")
 
 if __name__ == "__main__":
     handler({}, None)
