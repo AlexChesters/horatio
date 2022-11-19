@@ -1,10 +1,10 @@
 Description: SES infrastructure for Horatio
 Resources:
-  SendingEmailIdentity:
+  EmailIdentity:
     Type: AWS::SES::EmailIdentity
     Properties:
       EmailIdentity: alexchesters.com
   ReceivingEmailIdentity:
     Type: AWS::SES::EmailIdentity
     Properties:
-      EmailIdentity: chester.s
+      EmailIdentity: cheste.rs
