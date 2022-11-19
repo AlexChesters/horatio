@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "reporter"
+version = "0.1.0"
+description = "lambda to send report via ses"
+authors = ["Alex Chesters <10558792+AlexChesters@users.noreply.github.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "^1.26.10"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.15.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

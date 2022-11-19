@@ -1,0 +1,100 @@
+Transform: AWS::Serverless-2016-10-31
+Description: Infrastructure for horatio reporter
+Parameters:
+  Environment:
+    Description: The infrastructure environment
+    Type: String
+    AllowedValues:
+      - test
+      - live
+Resources:
+  FunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: !Sub "${Environment}-horatio-reporter-execution-role"
+      Policies:
+        - PolicyName: horatio-reporter-execution-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                Resource:
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-table-inspection-date-index-arn"
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                Resource:
+                  - Fn::ImportValue: !Sub "${Environment}-horatio-report-table-arn"
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: reporter.main.handler
+      Runtime: python3.9
+      CodeUri: ../../../apps/reporter/build
+      Role: !GetAtt FunctionExecutionRole.Arn
+      FunctionName: !Sub "${Environment}-horatio-reporter"
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Fn::ImportValue: !Sub "${Environment}-horatio-report-table-name"
+  # SchedulerRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - scheduler.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     RoleName: !Sub "${Environment}-horatio-recorder-scheduler-role"
+  #     Policies:
+  #       - PolicyName: horatio-recorder-scheduler-policy
+  #         PolicyDocument:
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - lambda:InvokeFunction
+  #               Resource:
+  #                 - !GetAtt Function.Arn
+  # Schedule:
+  #   Type: AWS::Scheduler::Schedule
+  #   Properties:
+  #     Name: !Sub "${Environment}-horatio-recorder"
+  #     ScheduleExpression: cron(30 20 * * ? *)
+  #     FlexibleTimeWindow:
+  #       Mode: "OFF"
+  #     Target:
+  #       Arn: !GetAtt Function.Arn
+  #       RoleArn: !GetAtt SchedulerRole.Arn
+  ErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      Period: 60
+      TreatMissingData: notBreaching
+      Statistic: Sum
+      Threshold: 0
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue notification-topic
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Function
