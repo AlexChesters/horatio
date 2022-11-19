@@ -1,6 +1,8 @@
 def generate_body(reports):
-    print(f"reports: {reports}")
     items = []
+
+    if not reports:
+        return "There were no violations found."
 
     for item in reports:
         report = item["report"]
