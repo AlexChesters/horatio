@@ -8,7 +8,7 @@ from reporter.utils.dynamo import deserialise
 
 client = boto3.client("dynamodb")
 
-def get_todays_data():
+def get_todays_reports():
     today = datetime.datetime.today()
 
     paginator = client.get_paginator("query")
