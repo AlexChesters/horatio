@@ -25,7 +25,8 @@ def inspect(credentials):
             results.append({
                 "rule_name": "default_vpc_exists",
                 "report": {
-                    "message": "default VPC exists in account",
+                    "message": "Default VPC exists in account",
+                    "remedy": "Delete the default VPC, replace with a custom one if a VPC is needed.",
                     "details": {
                         "vpc_id": vpc["VpcId"]
                     }
