@@ -4,6 +4,7 @@ import datetime
 import boto3
 
 from reporter.utils.flatten import flatten
+from reporter.utils.dynamo import deserialise
 
 client = boto3.client("dynamodb")
 
@@ -28,7 +29,9 @@ def handler(event, _context):
 
     results = flatten([result["Items"] for result in results])
 
-    print(f"results: {results}")
+    for raw_result in raw_result:
+        result = deserialise(raw_result)
+        print(f"result: {result}")
 
 if __name__ == "__main__":
     handler({}, None)

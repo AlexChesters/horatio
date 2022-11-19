@@ -19,6 +19,7 @@ test: install
 			export AWS_SESSION_TOKEN='testing' && \
 			export AWS_SECURITY_TOKEN='testing' && \
 			export PATH="${HOME}/.poetry/bin:${PATH}" && \
+			poetry run pytest . && \
 			poetry run pylint reporter \
 	)
 
