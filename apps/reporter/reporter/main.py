@@ -15,9 +15,7 @@ def handler(event, _context):
         IndexName="InspectionDateIndex",
         KeyConditionExpression="inspection_date = :today",
         ExpressionAttributeValues={
-            ":today": {
-                "S": f"{today.year}-{today.month}-{today.day}"
-            }
+            ":today": f"{today.year}-{today.month}-{today.day}"
         }
     )
 
