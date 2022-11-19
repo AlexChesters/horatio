@@ -7,6 +7,10 @@ Parameters:
     AllowedValues:
       - test
       - live
+Conditions:
+  IsLive: !Equals
+    - !Ref Environment
+    - live
 Resources:
   FunctionExecutionRole:
     Type: AWS::IAM::Role
@@ -62,37 +66,40 @@ Resources:
         Variables:
           TABLE_NAME:
             Fn::ImportValue: !Sub "${Environment}-horatio-report-table-name"
-  # SchedulerRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - scheduler.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     RoleName: !Sub "${Environment}-horatio-recorder-scheduler-role"
-  #     Policies:
-  #       - PolicyName: horatio-recorder-scheduler-policy
-  #         PolicyDocument:
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - lambda:InvokeFunction
-  #               Resource:
-  #                 - !GetAtt Function.Arn
-  # Schedule:
-  #   Type: AWS::Scheduler::Schedule
-  #   Properties:
-  #     Name: !Sub "${Environment}-horatio-recorder"
-  #     ScheduleExpression: cron(30 20 * * ? *)
-  #     FlexibleTimeWindow:
-  #       Mode: "OFF"
-  #     Target:
-  #       Arn: !GetAtt Function.Arn
-  #       RoleArn: !GetAtt SchedulerRole.Arn
+  SchedulerRole:
+    Type: AWS::IAM::Role
+    Condition: IsLive
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - scheduler.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      RoleName: !Sub "${Environment}-horatio-recorder-scheduler-role"
+      Policies:
+        - PolicyName: horatio-recorder-scheduler-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !GetAtt Function.Arn
+  Schedule:
+    Type: AWS::Scheduler::Schedule
+    Condition: IsLive
+    Properties:
+      Name: !Sub "${Environment}-horatio-recorder"
+      ScheduleExpression: cron(30 14 * * ? *)
+      ScheduleExpressionTimezone: Europe/London
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      Target:
+        Arn: !GetAtt Function.Arn
+        RoleArn: !GetAtt SchedulerRole.Arn
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
