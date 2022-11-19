@@ -1,4 +1,5 @@
 def generate_body(reports):
+    print(f"reports: {reports}")
     items = []
 
     for item in reports:
