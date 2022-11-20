@@ -72,7 +72,6 @@ def handler(event, _context):
                     MessageBody=json.dumps({
                         "account_id": account_id,
                         "rule_name": result["rule_name"],
-                        "region": region,
                         "inspection_date": f"{today.year}-{today.month}-{today.day}",
                         "report": report
                     })
