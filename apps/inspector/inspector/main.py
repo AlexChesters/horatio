@@ -14,8 +14,7 @@ SERVICE_MAP = {
     "VPC": vpc
 }
 
-# TODO: check other regions
-REGIONS = ["eu-west-1"]
+REGIONS = ["eu-west-1", "eu-west-2", "us-east-1"]
 
 sqs = boto3.resource("sqs")
 queue = sqs.Queue(os.environ["QUEUE_URL"])
