@@ -68,10 +68,14 @@ def handler(event, _context):
                 report = result["report"]
                 report["account_id"] = account_id
 
+                rule_name = result["rule_name"]
+
+                print(f"sending message to queue {account_id}|{rule_name}")
+
                 queue.send_message(
                     MessageBody=json.dumps({
                         "account_id": account_id,
-                        "rule_name": result["rule_name"],
+                        "rule_name": rule_name,
                         "inspection_date": f"{today.year}-{today.month}-{today.day}",
                         "report": report
                     })
