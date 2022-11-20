@@ -14,8 +14,6 @@ SERVICE_MAP = {
     "VPC": vpc
 }
 
-REGIONS = ["eu-west-1", "eu-west-2", "us-east-1"]
-
 sqs = boto3.resource("sqs")
 queue = sqs.Queue(os.environ["QUEUE_URL"])
 
@@ -61,7 +59,7 @@ def handler(event, _context):
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
 
-        for region in REGIONS:
+        for region in event["REGIONS"]:
             results = service.inspect(target_account_credentials, region)
 
             for result in results:
