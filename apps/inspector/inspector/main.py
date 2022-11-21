@@ -19,9 +19,6 @@ SERVICE_MAP = {
 logger = Logger()
 tracer = Tracer()
 
-sqs = boto3.resource("sqs")
-queue = sqs.Queue(os.environ["QUEUE_URL"])
-
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
     assumed_role_object = sts_client.assume_role(
@@ -33,6 +30,9 @@ def assume_role(role_arn):
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(log_event=True)
 def handler(event, _context):
+    sqs = boto3.resource("sqs")
+    queue = sqs.Queue(os.environ["QUEUE_URL"])
+
     service = SERVICE_MAP[event["SERVICE"]]
 
     list_accounts_credentials = assume_role("arn:aws:iam::008356366354:role/horatio-list-accounts-role")
