@@ -3,6 +3,8 @@ import boto3
 from inspector.utils.flatten import flatten
 
 def inspect(credentials, region):
+    print(f"inspecting vpc resources in {region}")
+
     results = []
 
     client = boto3.client(
