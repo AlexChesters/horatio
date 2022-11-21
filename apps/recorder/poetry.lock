@@ -15,6 +15,24 @@ wrapt = [
 ]
 
 [[package]]
+name = "aws-lambda-powertools"
+version = "2.3.1"
+description = "A suite of utilities for AWS Lambda functions to ease adopting best practices such as tracing, structured logging, custom metrics, batching, idempotency, feature flags, and more."
+category = "main"
+optional = false
+python-versions = ">=3.7.4,<4.0.0"
+
+[package.dependencies]
+typing-extensions = ">=4.4.0,<5.0.0"
+
+[package.extras]
+all = ["aws-xray-sdk (>=2.8.0,<3.0.0)", "fastjsonschema (>=2.14.5,<3.0.0)", "pydantic (>=1.8.2,<2.0.0)"]
+aws-sdk = ["boto3 (>=1.20.32,<2.0.0)"]
+parser = ["pydantic (>=1.8.2,<2.0.0)"]
+tracer = ["aws-xray-sdk (>=2.8.0,<3.0.0)"]
+validation = ["fastjsonschema (>=2.14.5,<3.0.0)"]
+
+[[package]]
 name = "boto3"
 version = "1.26.10"
 description = "The AWS SDK for Python"
@@ -191,7 +209,7 @@ python-versions = ">=3.6"
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -219,12 +237,16 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1999abb195075fe5c432dab9ebdfa73861500b147077ca2f4f5d6f37f958406b"
+content-hash = "4cee6faf6ad1b7c703376f8db4738718a4987c4cc60dd04e94d65c76f6a4bc11"
 
 [metadata.files]
 astroid = [
     {file = "astroid-2.12.12-py3-none-any.whl", hash = "sha256:72702205200b2a638358369d90c222d74ebc376787af8fb2f7f2a86f7b5cc85f"},
     {file = "astroid-2.12.12.tar.gz", hash = "sha256:1c00a14f5a3ed0339d38d2e2e5b74ea2591df5861c0936bb292b84ccf3a78d83"},
+]
+aws-lambda-powertools = [
+    {file = "aws_lambda_powertools-2.3.1-py3-none-any.whl", hash = "sha256:660b0294f14e6e62e957dcda76583e8bfbbd0b02c97ca3963b861d6b3c7415f2"},
+    {file = "aws_lambda_powertools-2.3.1.tar.gz", hash = "sha256:05661b2ed6d442008415519ffd2a61a39a5484b40d2ec46e10ad9a8a08e0e82e"},
 ]
 boto3 = [
     {file = "boto3-1.26.10-py3-none-any.whl", hash = "sha256:48e579088ec320f84266bb26434a14ab3e375456feb0f3bf043f78c485a3cee2"},

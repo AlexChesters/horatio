@@ -51,6 +51,8 @@ Resources:
         Variables:
           QUEUE_URL:
             Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-url"
+          POWERTOOLS_SERVICE_NAME: horatio-inspector
+          LOG_LEVEL: INFO
   SchedulerRole:
     Type: AWS::IAM::Role
     Properties:

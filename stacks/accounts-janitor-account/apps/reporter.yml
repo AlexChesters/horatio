@@ -66,6 +66,8 @@ Resources:
         Variables:
           TABLE_NAME:
             Fn::ImportValue: !Sub "${Environment}-horatio-report-table-name"
+          POWERTOOLS_SERVICE_NAME: horatio-reporter
+          LOG_LEVEL: INFO
   SchedulerRole:
     Type: AWS::IAM::Role
     Condition: IsLive

@@ -53,6 +53,8 @@ Resources:
           TABLE_NAME:
             Fn::ImportValue:
               !Sub "${Environment}-horatio-report-table-name"
+          POWERTOOLS_SERVICE_NAME: horatio-recorder
+          LOG_LEVEL: INFO
       Events:
         ReportQueue:
           Type: SQS

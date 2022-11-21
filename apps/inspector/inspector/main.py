@@ -3,6 +3,7 @@ import datetime
 import json
 
 import boto3
+from aws_lambda_powertools import Logger
 
 from inspector.services import vpc
 
@@ -13,6 +14,8 @@ MANAGEMENT_ACCOUNT_ID = "008356366354"
 SERVICE_MAP = {
     "VPC": vpc
 }
+
+logger = Logger()
 
 sqs = boto3.resource("sqs")
 queue = sqs.Queue(os.environ["QUEUE_URL"])
@@ -25,9 +28,8 @@ def assume_role(role_arn):
     )
     return assumed_role_object["Credentials"]
 
+@logger.inject_lambda_context(log_event=True)
 def handler(event, _context):
-    print(f"handling event: {event}")
-
     service = SERVICE_MAP[event["SERVICE"]]
 
     list_accounts_credentials = assume_role("arn:aws:iam::008356366354:role/horatio-list-accounts-role")

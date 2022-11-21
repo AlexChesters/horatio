@@ -3,13 +3,15 @@ import os
 import json
 
 import boto3
+from aws_lambda_powertools import Logger
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 
-def handler(event, _context):
-    print(f"handling event: {event}")
+logger = Logger()
 
+@logger.inject_lambda_context(log_event=True)
+def handler(event, _context):
     today = datetime.datetime.today()
     thirty_days_from_today = today + datetime.timedelta(30)
 
