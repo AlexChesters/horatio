@@ -47,6 +47,7 @@ Resources:
       FunctionName: !Sub "${Environment}-horatio-inspector"
       MemorySize: 256
       Timeout: 30
+      Tracing: Active
       Environment:
         Variables:
           QUEUE_URL:

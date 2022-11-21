@@ -48,6 +48,7 @@ Resources:
       FunctionName: !Sub "${Environment}-horatio-recorder"
       MemorySize: 256
       Timeout: 30
+      Tracing: Active
       Environment:
         Variables:
           TABLE_NAME:

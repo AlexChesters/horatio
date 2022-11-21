@@ -4,6 +4,7 @@ import json
 
 import boto3
 from aws_lambda_powertools import Logger
+from aws_lambda_powertools import Tracer
 
 from inspector.services import vpc
 
@@ -16,6 +17,7 @@ SERVICE_MAP = {
 }
 
 logger = Logger()
+tracer = Tracer()
 
 sqs = boto3.resource("sqs")
 queue = sqs.Queue(os.environ["QUEUE_URL"])
@@ -28,6 +30,7 @@ def assume_role(role_arn):
     )
     return assumed_role_object["Credentials"]
 
+@tracer.capture_lambda_handler
 @logger.inject_lambda_context(log_event=True)
 def handler(event, _context):
     service = SERVICE_MAP[event["SERVICE"]]

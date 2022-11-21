@@ -62,6 +62,7 @@ Resources:
       FunctionName: !Sub "${Environment}-horatio-reporter"
       MemorySize: 256
       Timeout: 30
+      Tracing: Active
       Environment:
         Variables:
           TABLE_NAME:
