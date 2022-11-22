@@ -6,6 +6,7 @@ def find_packer_key_pairs(client, region):
     key_pair_results = client.describe_key_pairs()
 
     for key_pair in key_pair_results["KeyPairs"]:
+        print(f"found key pair: {key_pair['KeyName']}")
         if key_pair["KeyName"].startswith("packer_"):
             results.append({
                 "rule_name": "packer_key_pair_exists",
@@ -20,7 +21,7 @@ def find_packer_key_pairs(client, region):
     return results
 
 def inspect(credentials, region):
-    print(f"inspecting vpc resources in {region}")
+    print(f"inspecting ec2 resources in {region}")
 
     results = []
 
