@@ -2,18 +2,8 @@ import boto3
 
 from inspector.utils.flatten import flatten
 
-def inspect(credentials, region):
-    print(f"inspecting vpc resources in {region}")
-
+def find_default_vpcs(client, region):
     results = []
-
-    client = boto3.client(
-        "ec2",
-        region_name=region,
-        aws_access_key_id=credentials["AccessKeyId"],
-        aws_secret_access_key=credentials["SecretAccessKey"],
-        aws_session_token=credentials["SessionToken"]
-    )
 
     paginator = client.get_paginator("describe_vpcs")
 
@@ -33,5 +23,22 @@ def inspect(credentials, region):
                     "region": region
                 }
             })
+
+    return results
+
+def inspect(credentials, region):
+    print(f"inspecting vpc resources in {region}")
+
+    results = []
+
+    client = boto3.client(
+        "ec2",
+        region_name=region,
+        aws_access_key_id=credentials["AccessKeyId"],
+        aws_secret_access_key=credentials["SecretAccessKey"],
+        aws_session_token=credentials["SessionToken"]
+    )
+
+    results.extend(find_default_vpcs(client, region))
 
     return results
