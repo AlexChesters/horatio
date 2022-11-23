@@ -37,7 +37,7 @@ def inspect(credentials, region):
     results = []
 
     client = boto3.client(
-        "ec2",
+        "cloudformation",
         region_name=region,
         aws_access_key_id=credentials["AccessKeyId"],
         aws_secret_access_key=credentials["SecretAccessKey"],
