@@ -6,6 +6,7 @@ def verify_budgets_exist(client, region, account_id):
     results = []
 
     paginator = client.get_paginator("describe_budget_actions_for_account")
+    print(f"analysing actions for account {account_id}")
 
     actions = flatten([
         result.get("Actions", [])
@@ -15,8 +16,8 @@ def verify_budgets_exist(client, region, account_id):
     account_has_action_for_forecast = False
     account_has_action_for_actual = False
 
+    print(f"analysing actions: {actions}")
     for action in actions:
-        print(f"analysing action: {action}")
         if action["NotificationType"] == "ACTUAL":
             account_has_action_for_actual = True
         elif action["NotificationType"] == "FORECASTED":
