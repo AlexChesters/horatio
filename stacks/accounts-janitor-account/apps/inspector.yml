@@ -121,7 +121,7 @@ Resources:
         Input: |
           {
             "SERVICE": "CLOUDFORMATION",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
+            "REGIONS": ["eu-west-1"]
           }
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
