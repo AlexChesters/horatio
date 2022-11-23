@@ -107,10 +107,10 @@ Resources:
             "SERVICE": "EC2",
             "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
           }
-  CloudFormationSchedule:
+  BudgetsSchedule:
     Type: AWS::Scheduler::Schedule
     Properties:
-      Name: !Sub "${Environment}-horatio-inspector-cloudformation"
+      Name: !Sub "${Environment}-horatio-inspector-budgets"
       ScheduleExpression: cron(30 08 * * ? *)
       ScheduleExpressionTimezone: Europe/London
       FlexibleTimeWindow:
@@ -120,7 +120,7 @@ Resources:
         RoleArn: !GetAtt SchedulerRole.Arn
         Input: |
           {
-            "SERVICE": "CLOUDFORMATION",
+            "SERVICE": "BUDGETS",
             "REGIONS": ["eu-west-1"]
           }
   ErrorAlarm:

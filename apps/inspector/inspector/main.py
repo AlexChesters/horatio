@@ -6,7 +6,7 @@ import boto3
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools import Tracer
 
-from inspector.services import vpc, ec2, cloudformation
+from inspector.services import budgets, vpc, ec2
 
 from inspector.utils.flatten import flatten
 
@@ -15,7 +15,7 @@ MANAGEMENT_ACCOUNT_ID = "008356366354"
 SERVICE_MAP = {
     "VPC": vpc,
     "EC2": ec2,
-    "CLOUDFORMATION": cloudformation
+    "BUDGETS": budgets
 }
 
 logger = Logger()
