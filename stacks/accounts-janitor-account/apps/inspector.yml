@@ -46,7 +46,7 @@ Resources:
       Role: !GetAtt FunctionExecutionRole.Arn
       FunctionName: !Sub "${Environment}-horatio-inspector"
       MemorySize: 256
-      Timeout: 30
+      Timeout: 120
       Tracing: Active
       Environment:
         Variables:
