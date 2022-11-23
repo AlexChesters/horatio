@@ -2,18 +2,46 @@ import boto3
 
 from inspector.utils.flatten import flatten
 
-def verify_budgets_exist(client, _region, account_id):
+def verify_budgets_exist(client, region, account_id):
     results = []
 
-    paginator = client.get_paginator("describe_budgets")
+    paginator = client.get_paginator("describe_budget_actions_for_account")
 
-    budgets = flatten([
-        result.get("Budgets", [])
+    actions = flatten([
+        result.get("Actions", [])
         for result in paginator.paginate(AccountId=account_id)
     ])
 
-    for budget in budgets:
-        print(f"budget: {budget}")
+    account_has_action_for_forecast = False
+    account_has_action_for_actual = False
+
+    for action in actions:
+        if action["NotificationType"] == "ACTUAL":
+            account_has_action_for_actual = True
+        elif action["NotificationType"] == "FORECASTED":
+            account_has_action_for_forecast = True
+
+    if not account_has_action_for_forecast:
+        results.append({
+            "rule_name": "forecast_budget_with_action",
+            "report": {
+                "message": "No forecast budget with an action exists",
+                "remedy": "Create a forecast budget with an associated action",
+                "resource_id": account_id,
+                "region": region
+            }
+        })
+
+    if not account_has_action_for_actual:
+        results.append({
+            "rule_name": "actual_budget_with_action",
+            "report": {
+                "message": "No actual budget with an action exists",
+                "remedy": "Create a actual budget with an associated action",
+                "resource_id": account_id,
+                "region": region
+            }
+        })
 
     return results
 
