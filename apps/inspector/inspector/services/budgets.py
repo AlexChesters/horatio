@@ -8,7 +8,7 @@ def verify_budgets_exist(client, _region, account_id):
     paginator = client.get_paginator("describe_budgets")
 
     budgets = flatten([
-        result["Budgets"]
+        result.get("Budgets", [])
         for result in paginator.paginate(AccountId=account_id)
     ])
 
