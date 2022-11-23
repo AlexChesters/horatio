@@ -16,11 +16,12 @@ def verify_budgets_exist(client, region, account_id):
     account_has_notification_for_forecast = False
     account_has_notification_for_actual = False
 
-    for notification in notifications_for_account.get("Notifications", []):
-        if notification["NotificationType"] == "ACTUAL":
-            account_has_notification_for_actual = True
-        elif notification["NotificationType"] == "FORECASTED":
-            account_has_notification_for_forecast = True
+    for notifications in notifications_for_account:
+        for notification in notifications.get("Notifications", []):
+            if notifications["NotificationType"] == "ACTUAL":
+                account_has_notification_for_actual = True
+            elif notifications["NotificationType"] == "FORECASTED":
+                account_has_notification_for_forecast = True
 
     if not account_has_notification_for_forecast:
         results.append({
