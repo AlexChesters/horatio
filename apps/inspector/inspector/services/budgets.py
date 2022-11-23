@@ -16,6 +16,7 @@ def verify_budgets_exist(client, region, account_id):
     account_has_action_for_actual = False
 
     for action in actions:
+        print(f"analysing action: {action}")
         if action["NotificationType"] == "ACTUAL":
             account_has_action_for_actual = True
         elif action["NotificationType"] == "FORECASTED":
