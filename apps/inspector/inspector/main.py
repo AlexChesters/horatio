@@ -58,6 +58,10 @@ def handler(event, _context):
         account_id = str(account["Id"])
         account_name = account["Name"]
 
+        if account_id == "950174517461":
+            print(f"account {account_id} has been scheduled for deletion, skipping")
+            continue
+
         print(f"processing account {account_name} ({account_id})")
 
         if account_id == MANAGEMENT_ACCOUNT_ID:
