@@ -131,3 +131,6 @@ dmypy.json
 # debug code
 lambda_invoke_log.txt
 lambda_invoke_output.txt
+
+# vscode
+.vscode/
