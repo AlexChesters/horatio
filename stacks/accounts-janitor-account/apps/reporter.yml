@@ -81,9 +81,9 @@ Resources:
                 - scheduler.amazonaws.com
             Action:
               - sts:AssumeRole
-      RoleName: !Sub "${Environment}-horatio-recorder-scheduler-role"
+      RoleName: !Sub "${Environment}-horatio-reporter-scheduler-role"
       Policies:
-        - PolicyName: horatio-recorder-scheduler-policy
+        - PolicyName: horatio-reporter-scheduler-policy
           PolicyDocument:
             Statement:
               - Effect: Allow
@@ -95,7 +95,7 @@ Resources:
     Type: AWS::Scheduler::Schedule
     Condition: IsLive
     Properties:
-      Name: !Sub "${Environment}-horatio-recorder"
+      Name: !Sub "${Environment}-horatio-reporter"
       ScheduleExpression: cron(30 14 * * ? *)
       ScheduleExpressionTimezone: Europe/London
       FlexibleTimeWindow:
