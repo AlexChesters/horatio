@@ -29,7 +29,7 @@ def find_access_keys_of_old_age(client, region):
                 results.append({
                     "rule_name": "iam_user_access_key_age",
                     "report": {
-                        "message": "IAM user has an access key older than 30 days",
+                        "message": f"IAM user has an access key older than 30 days ({delta.days})",
                         "remedy": "Rotate the access key.",
                         "resource_id": user["UserName"],
                         "region": region
