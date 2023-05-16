@@ -123,6 +123,22 @@ Resources:
             "SERVICE": "BUDGETS",
             "REGIONS": ["eu-west-1"]
           }
+  IAMSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "${Environment}-horatio-inspector-iam"
+      ScheduleExpression: cron(30 08 * * ? *)
+      ScheduleExpressionTimezone: Europe/London
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      Target:
+        Arn: !GetAtt Function.Arn
+        RoleArn: !GetAtt SchedulerRole.Arn
+        Input: |
+          {
+            "SERVICE": "IAM",
+            "REGIONS": ["us-east-1"]
+          }
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:

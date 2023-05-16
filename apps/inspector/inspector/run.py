@@ -11,7 +11,7 @@ class LambdaContext:
 
 event = {
     "SERVICE": "IAM",
-    "REGIONS": ["eu-west-1"]
+    "REGIONS": ["us-east-1"]
 }
 
 main.handler(event, LambdaContext())

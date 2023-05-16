@@ -4,7 +4,7 @@ import boto3
 
 from inspector.utils.flatten import flatten
 
-def find_access_keys_of_old_age(client):
+def find_access_keys_of_old_age(client, region):
     results = []
 
     users_paginator = client.get_paginator("list_users")
@@ -31,26 +31,26 @@ def find_access_keys_of_old_age(client):
                     "report": {
                         "message": "IAM user has an access key older than 30 days",
                         "remedy": "Rotate the access key.",
-                        "resource_id": user["UserName"]
+                        "resource_id": user["UserName"],
+                        "region": region
                     }
                 })
-            print(f"access key is {delta.days} days old")
 
     return results
 
-def inspect(credentials, _region):
-    print("inspecting iam resources")
+def inspect(credentials, region):
+    print(f"inspecting iam resources in {region}")
 
     results = []
 
     client = boto3.client(
         "iam",
-        region_name="us-east-1",
+        region_name=region,
         aws_access_key_id=credentials["AccessKeyId"],
         aws_secret_access_key=credentials["SecretAccessKey"],
         aws_session_token=credentials["SessionToken"]
     )
 
-    results.extend(find_access_keys_of_old_age(client))
+    results.extend(find_access_keys_of_old_age(client, region))
 
     return results
