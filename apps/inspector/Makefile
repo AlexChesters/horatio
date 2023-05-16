@@ -10,7 +10,7 @@ install:
 	)
 
 run:
-	AWS_PROFILE=accounts-janitor poetry run python3 inspector/main.py
+	AWS_PROFILE=accounts-janitor QUEUE_URL=https://fake poetry run python3 inspector/run.py
 
 test: install
 	( \

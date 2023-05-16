@@ -18,12 +18,12 @@ Resources:
             Effect: Allow
             Principal:
               AWS:
-                - arn:aws:iam::008356366354:root
+                - arn:aws:iam::723247229166:root
             Condition:
               StringEquals:
                 aws:PrincipalOrgID: o-hru7a3vwm2
               ArnLike:
-                aws:PrincipalARN: arn:aws:iam::008356366354:role/aws-reserved/sso.amazonaws.com/*
+                aws:PrincipalARN: arn:aws:iam::723247229166:role/aws-reserved/sso.amazonaws.com/*
       RoleName: horatio-list-accounts-role
       Policies:
         - PolicyName: horatio-list-accounts-policy
