@@ -28,4 +28,4 @@ def get_todays_reports():
 
     results = flatten([result["Items"] for result in results])
 
-    return map(lambda result: deserialise(result), results)
+    return list(map(lambda result: deserialise(result), results))
