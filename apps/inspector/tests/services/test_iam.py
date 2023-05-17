@@ -28,3 +28,12 @@ class IAMTestsTests(unittest.TestCase):
 
         results = inspect(self.dummy_credentials, "eu-west-1")
         self.assertListEqual(results, [], "An IAM user without an access key should mean no results are produced")
+
+    def test_iam_user_with_access_key_with_recent_access_key_returns_no_results(self):
+        iam = boto3.resource("iam")
+        user = iam.User("some-user")
+        user.create()
+        user.create_access_key_pair()
+
+        results = inspect(self.dummy_credentials, "eu-west-1")
+        self.assertListEqual(results, [], "An IAM user with a recent access key should mean no results are produced")
