@@ -58,9 +58,10 @@ def handler(event, _context):
     for account in organisation_accounts:
         account_id = str(account["Id"])
         account_name = account["Name"]
+        account_status = account["Status"]
 
-        if account_id == "950174517461":
-            print(f"account {account_id} has been scheduled for deletion, skipping")
+        if account_status == "SUSPENDED":
+            print(f"ignoring account {account_name} as it is suspended")
             continue
 
         print(f"processing account {account_name} ({account_id})")
