@@ -7,7 +7,7 @@ from freezegun import freeze_time
 from inspector.services.iam import inspect
 
 @mock_iam
-class IAMTestsTests(unittest.TestCase):
+class IAMTests(unittest.TestCase):
     def setUp(self):
         self.dummy_credentials = {
             "AccessKeyId": "testing",
