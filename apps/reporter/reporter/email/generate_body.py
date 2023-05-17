@@ -1,6 +1,8 @@
 def generate_body(reports):
     items = []
 
+    print(f"reports: {reports}")
+
     if not reports:
         return "There were no violations found."
 
