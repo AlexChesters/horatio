@@ -61,13 +61,13 @@ def handler(event, _context):
         account_status = account["Status"]
 
         if account_status == "SUSPENDED":
-            print(f"ignoring account {account_name} as it is suspended")
+            logger.info(f"ignoring account {account_name} as it is suspended")
             continue
 
-        print(f"processing account {account_name} ({account_id})")
+        logger.info(f"processing account {account_name} ({account_id})")
 
         if account_id == MANAGEMENT_ACCOUNT_ID:
-            print(f"{account_name} is management account, skipping")
+            logger.info(f"{account_name} is management account, skipping")
             continue
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
@@ -83,7 +83,7 @@ def handler(event, _context):
 
                 rule_name = result["rule_name"]
 
-                print(f"sending message to queue {account_id}|{rule_name}")
+                logger.info(f"sending message to queue {account_id}|{rule_name}")
 
                 queue.send_message(
                     MessageBody=json.dumps({

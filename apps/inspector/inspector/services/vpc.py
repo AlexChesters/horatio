@@ -27,7 +27,7 @@ def find_default_vpcs(client, region):
     return results
 
 def inspect(credentials, region):
-    print(f"inspecting vpc resources in {region}")
+    logger.info(f"inspecting vpc resources in {region}")
 
     results = []
 

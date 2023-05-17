@@ -39,7 +39,7 @@ def find_access_keys_of_old_age(client, region):
     return results
 
 def inspect(credentials, region):
-    print(f"inspecting iam resources in {region}")
+    logger.info(f"inspecting iam resources in {region}")
 
     results = []
 

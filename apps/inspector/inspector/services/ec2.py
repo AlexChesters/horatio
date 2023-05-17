@@ -20,7 +20,7 @@ def find_packer_key_pairs(client, region):
     return results
 
 def inspect(credentials, region):
-    print(f"inspecting ec2 resources in {region}")
+    logger.info(f"inspecting ec2 resources in {region}")
 
     results = []
 

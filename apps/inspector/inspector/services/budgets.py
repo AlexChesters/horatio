@@ -6,7 +6,7 @@ def verify_budgets_exist(client, region, account_id):
     results = []
 
     paginator = client.get_paginator("describe_budget_notifications_for_account")
-    print(f"analysing notifications for account {account_id}")
+    logger.info(f"analysing notifications for account {account_id}")
 
     notifications_for_account = flatten([
         result.get("BudgetNotificationsForAccount", [])
@@ -48,7 +48,7 @@ def verify_budgets_exist(client, region, account_id):
     return results
 
 def inspect(credentials, region):
-    print(f"inspecting budget resources in {region}")
+    logger.info(f"inspecting budget resources in {region}")
 
     results = []
 
