@@ -25,10 +25,11 @@ def handler(event, _context):
         rule_name = message_body["rule_name"]
         inspection_date = message_body["inspection_date"]
         report = message_body["report"]
+        resource_id = report["resource_id"]
 
         table.put_item(
             Item={
-                "partition_key": f"{account_id}|{rule_name}",
+                "partition_key": f"{account_id}|{rule_name}|{resource_id}",
                 "inspection_date": inspection_date,
                 "report": report,
                 "ttl": int(thirty_days_from_today.timestamp())
