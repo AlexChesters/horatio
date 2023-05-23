@@ -1,6 +1,9 @@
 import boto3
+from aws_lambda_powertools import Logger
 
 from inspector.utils.flatten import flatten
+
+logger = Logger()
 
 def find_default_vpcs(client, region):
     results = []

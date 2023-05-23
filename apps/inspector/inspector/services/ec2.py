@@ -1,4 +1,7 @@
 import boto3
+from aws_lambda_powertools import Logger
+
+logger = Logger()
 
 def find_packer_key_pairs(client, region):
     results = []

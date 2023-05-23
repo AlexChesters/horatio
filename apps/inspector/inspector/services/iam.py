@@ -1,8 +1,11 @@
 from datetime import datetime, timezone
 
 import boto3
+from aws_lambda_powertools import Logger
 
 from inspector.utils.flatten import flatten
+
+logger = Logger()
 
 def find_access_keys_of_old_age(client, region):
     results = []

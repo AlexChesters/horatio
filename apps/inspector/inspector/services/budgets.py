@@ -1,6 +1,9 @@
 import boto3
+from aws_lambda_powertools import Logger
 
 from inspector.utils.flatten import flatten
+
+logger = Logger()
 
 def verify_budgets_exist(client, region, account_id):
     results = []
