@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 import boto3
 from aws_lambda_powertools import Logger
 
@@ -10,15 +12,19 @@ def find_packer_key_pairs(client, region):
 
     for key_pair in key_pair_results["KeyPairs"]:
         if key_pair["KeyName"].startswith("packer_"):
-            results.append({
-                "rule_name": "packer_key_pair_exists",
-                "report": {
-                    "message": "Packer key pair exists in account",
-                    "remedy": "Delete the packer key pair.",
-                    "resource_id": key_pair["KeyName"],
-                    "region": region
-                }
-            })
+            now = datetime.now(timezone.utc)
+            delta = now - key_pair["CreateTime"]
+
+            if delta.total_seconds() / 3600 > 30:
+                results.append({
+                    "rule_name": "packer_key_pair_exists",
+                    "report": {
+                        "message": "Packer key pair exists in account",
+                        "remedy": "Delete the packer key pair.",
+                        "resource_id": key_pair["KeyName"],
+                        "region": region
+                    }
+                })
 
     return results
 
