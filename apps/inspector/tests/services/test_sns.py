@@ -41,3 +41,22 @@ class SNSTests(unittest.TestCase):
             ],
             "An SNS topic with no subscriptions should mean a result is produced"
         )
+
+    def test_sns_topic_with_confirmed_subscriptions_does_not_return_a_result(self):
+        sns = boto3.client("sns")
+        topic = sns.create_topic(
+            Name="my-topic"
+        )
+        sns.subscribe(
+           TopicArn=topic["TopicArn"],
+           Protocol="sms",
+           Endpoint="+4411111111"
+        )
+
+        results = inspect(self.dummy_credentials, "eu-west-1")
+
+        self.assertListEqual(
+            results,
+            [],
+            "An SNS topic with confirmed subscriptions should not return a result"
+        )
