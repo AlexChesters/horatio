@@ -54,14 +54,14 @@ class EC2Tests(unittest.TestCase):
             results,
             [
                 {
-                "rule_name": "packer_key_pair_exists",
-                "report": {
-                    "message": "Packer key pair exists in account",
-                    "remedy": "Delete the packer key pair.",
-                    "resource_id": "packer_abc123",
-                    "region": "eu-west-1"
+                    "rule_name": "packer_key_pair_exists",
+                    "report": {
+                        "message": "Packer key pair exists in account",
+                        "remedy": "Delete the packer key pair.",
+                        "resource_id": "packer_abc123",
+                        "region": "eu-west-1"
+                    }
                 }
-            }
             ],
             "A packer key pair should mean a result is produced"
         )
