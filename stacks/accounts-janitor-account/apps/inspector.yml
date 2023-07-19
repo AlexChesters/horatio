@@ -139,6 +139,22 @@ Resources:
             "SERVICE": "IAM",
             "REGIONS": ["us-east-1"]
           }
+  SNSSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "${Environment}-horatio-inspector-sns"
+      ScheduleExpression: cron(30 08 * * ? *)
+      ScheduleExpressionTimezone: Europe/London
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      Target:
+        Arn: !GetAtt Function.Arn
+        RoleArn: !GetAtt SchedulerRole.Arn
+        Input: |
+          {
+            "SERVICE": "SNS",
+            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
+          }
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
