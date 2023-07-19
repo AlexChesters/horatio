@@ -32,6 +32,29 @@ def find_topics_without_subscriptions(client, region):
 
     return results
 
+def find_topics_with_unconfirmed_subscriptions(client, region):
+    results = []
+
+    subscriptions_results = flatten([
+        result["Subscriptions"]
+        for result in client.get_paginator("list_subscriptions").paginate()
+    ])
+
+    for subscription in subscriptions_results:
+        attributes = client.get_subscription_attributes(SubscriptionArn=subscription["SubscriptionArn"])["Attributes"]
+        if attributes["PendingConfirmation"]:
+            results.append({
+                "rule_name": "sns_topic_with_unconfirmed_subscriptions",
+                "report": {
+                    "message": "SNS Topic exists with unconfirmed subscription(s)",
+                    "remedy": "Confirm the subscription(s).",
+                    "resource_id": subscription["SubscriptionArn"],
+                    "region": region
+                }
+            })
+
+    return results
+
 def inspect(credentials, region):
     logger.info(f"inspecting sns resources in {region}")
 
@@ -46,5 +69,6 @@ def inspect(credentials, region):
     )
 
     results.extend(find_topics_without_subscriptions(client, region))
+    results.extend(find_topics_with_unconfirmed_subscriptions(client, region))
 
     return results
