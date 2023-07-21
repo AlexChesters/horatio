@@ -65,3 +65,40 @@ class EC2Tests(unittest.TestCase):
             ],
             "A packer key pair should mean a result is produced"
         )
+
+    def test_running_ec2_instance_returns_no_results(self):
+        ec2 = boto3.client("ec2")
+        ec2.run_instances(
+            MinCount=1,
+            MaxCount=1
+        )
+
+        results = inspect(self.dummy_credentials, "eu-west-1")
+        self.assertListEqual(results, [], "A running EC2 instance should mean no results are produced")
+
+    def test_stopped_ec2_instance_returns_result(self):
+        ec2 = boto3.client("ec2")
+        run_instances_results = ec2.run_instances(
+            MinCount=1,
+            MaxCount=1
+        )
+        ec2.stop_instances(
+            InstanceIds=[run_instances_results["Instances"][0]["InstanceId"]]
+        )
+
+        results = inspect(self.dummy_credentials, "eu-west-1")
+        self.assertListEqual(
+            results,
+            [
+                {
+                    "rule_name": "instance_stopped",
+                    "report": {
+                        "message": "An EC2 instance in the stopped state",
+                        "remedy": "Terminate or restart the instance.",
+                        "resource_id": run_instances_results["Instances"][0]["InstanceId"],
+                        "region": "eu-west-1"
+                    }
+                }
+            ],
+            "A stopped EC2 instance should mean a result is produced"
+        )
