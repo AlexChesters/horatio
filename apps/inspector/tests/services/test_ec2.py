@@ -29,7 +29,7 @@ class EC2Tests(unittest.TestCase):
         )
 
         results = inspect(self.dummy_credentials, "eu-west-1")
-        self.assertListEqual(results, [], "No key pairs should mean no results are produced")
+        self.assertListEqual(results, [], "A non-packer key pair should mean no results are produced")
 
     def test_packer_key_pairs_returns_no_results_if_less_than_3_hours_old(self):
         ec2 = boto3.resource("ec2")
