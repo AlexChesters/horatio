@@ -41,8 +41,7 @@ def find_topics_with_unconfirmed_subscriptions(client, region):
     ])
 
     for subscription in subscriptions_results:
-        attributes = client.get_subscription_attributes(SubscriptionArn=subscription["SubscriptionArn"])["Attributes"]
-        if attributes["PendingConfirmation"].lower() == "true":
+        if subscription["SubscriptionArn"] == "PendingConfirmation":
             results.append({
                 "rule_name": "sns_topic_with_unconfirmed_subscriptions",
                 "report": {
