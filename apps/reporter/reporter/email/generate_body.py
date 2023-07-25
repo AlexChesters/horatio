@@ -2,7 +2,7 @@ def generate_body(reports):
     items = []
 
     if not reports:
-        return "There were no violations found."
+        return None
 
     for item in reports:
         report = item["report"]

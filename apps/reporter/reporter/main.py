@@ -13,7 +13,11 @@ tracer = Tracer()
 def handler(_event, _context):
     reports = get_todays_reports()
     body = generate_body(reports)
-    send_email(body)
+
+    if body:
+        send_email(body)
+    else:
+        logger.info("report was empty, not sending email")
 
 if __name__ == "__main__":
     handler({}, None)
