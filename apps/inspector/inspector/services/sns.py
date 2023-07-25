@@ -42,6 +42,7 @@ def find_topics_with_unconfirmed_subscriptions(client, region):
 
     for subscription in subscriptions_results:
         if subscription["SubscriptionArn"] == "PendingConfirmation":
+            logger.info(f"found sns with unconfirmed subscriptions: {subscription}")
             results.append({
                 "rule_name": "sns_topic_with_unconfirmed_subscriptions",
                 "report": {
