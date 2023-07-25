@@ -10,8 +10,8 @@ class LambdaContext:
     aws_request_id: str = "52fdfc07-2182-154f-163f-5f0f9a621d72"
 
 event = {
-    "SERVICE": "IAM",
-    "REGIONS": ["us-east-1"]
+    "SERVICE": "CODESTAR_CONNECTIONS",
+    "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
 }
 
 main.handler(event, LambdaContext())
