@@ -48,7 +48,7 @@ def find_topics_with_unconfirmed_subscriptions(client, region):
                 "report": {
                     "message": "SNS Topic exists with unconfirmed subscription(s)",
                     "remedy": "Confirm the subscription(s).",
-                    "resource_id": subscription["SubscriptionArn"],
+                    "resource_id": subscription["TopicArn"],
                     "region": region
                 }
             })
