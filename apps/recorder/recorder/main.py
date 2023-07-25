@@ -16,7 +16,7 @@ def handler(event, _context):
     table = dynamodb.Table(os.environ["TABLE_NAME"])
 
     today = datetime.datetime.today()
-    thirty_days_from_today = today + datetime.timedelta(30)
+    one_year_from_today = today + datetime.timedelta(365)
 
     for record in event["Records"]:
         message_body = json.loads(record["body"])
@@ -32,7 +32,7 @@ def handler(event, _context):
                 "partition_key": f"{account_id}|{rule_name}|{resource_id}",
                 "inspection_date": inspection_date,
                 "report": report,
-                "ttl": int(thirty_days_from_today.timestamp())
+                "ttl": int(one_year_from_today.timestamp())
             }
         )
 
