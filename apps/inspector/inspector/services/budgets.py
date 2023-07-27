@@ -9,7 +9,6 @@ def verify_budgets_exist(client, region, account_id):
     results = []
 
     paginator = client.get_paginator("describe_budget_notifications_for_account")
-    logger.info(f"analysing notifications for account {account_id}")
 
     notifications_for_account = flatten([
         result.get("BudgetNotificationsForAccount", [])
