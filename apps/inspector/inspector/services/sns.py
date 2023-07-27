@@ -44,6 +44,7 @@ def find_topics_with_unconfirmed_subscriptions(client, region):
         # the ARN itself doesn't exist until it is confirmed, until then the ARN as returned by the API is the string
         # "PendingConfirmation"
         if subscription["SubscriptionArn"] == "PendingConfirmation":
+            logger.info(f"subscription pending confirmation: {subscription}")
             results.append({
                 "rule_name": "sns_topic_with_unconfirmed_subscriptions",
                 "report": {
