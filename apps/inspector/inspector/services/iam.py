@@ -28,7 +28,7 @@ def find_access_keys_of_old_age(client, region):
             now = datetime.now(timezone.utc)
             delta = now - access_key_create_date
 
-            if delta.days > 30:
+            if delta.days > 60:
                 results.append({
                     "rule_name": "iam_user_access_key_age",
                     "report": {
