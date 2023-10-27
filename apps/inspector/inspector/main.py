@@ -100,4 +100,5 @@ def handler(event, _context):
 
                 with single_metric(name="HoratioFinding", unit=MetricUnit.Count, value=1) as metric:
                     metric.add_dimension(name="ServiceName", value=service_name)
+                    metric.add_dimension(name="RuleName", value=rule_name)
                     metric.add_dimension(name="AccountID", value=account_id)
