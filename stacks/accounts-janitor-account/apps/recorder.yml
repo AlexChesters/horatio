@@ -55,6 +55,7 @@ Resources:
             Fn::ImportValue:
               !Sub "${Environment}-horatio-report-table-name"
           POWERTOOLS_SERVICE_NAME: horatio-recorder
+          POWERTOOLS_TRACER_CAPTURE_ERROR: false
           LOG_LEVEL: INFO
       Events:
         ReportQueue:
