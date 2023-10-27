@@ -3,8 +3,8 @@ import datetime
 import json
 
 import boto3
-from aws_lambda_powertools import Logger
-from aws_lambda_powertools import Tracer
+from aws_lambda_powertools import Logger, Tracer, Metrics, single_metric
+from aws_lambda_powertools.metrics import MetricUnit
 
 from inspector.services import budgets, vpc, ec2, iam, sns, codestar_connections
 
@@ -23,6 +23,7 @@ SERVICE_MAP = {
 
 logger = Logger()
 tracer = Tracer()
+metrics = Metrics()
 
 def assume_role(role_arn):
     sts_client = boto3.client("sts")
@@ -37,8 +38,9 @@ def assume_role(role_arn):
 def handler(event, _context):
     sqs = boto3.resource("sqs")
     queue = sqs.Queue(os.environ["QUEUE_URL"])
+    service_name = event["SERVICE"]
 
-    service = SERVICE_MAP[event["SERVICE"]]
+    service = SERVICE_MAP[service_name]
 
     list_accounts_credentials = assume_role("arn:aws:iam::008356366354:role/horatio-list-accounts-role")
 
@@ -95,3 +97,7 @@ def handler(event, _context):
                         "report": report
                     })
                 )
+
+                with single_metric(name="HoratioFinding", unit=MetricUnit.Count, value=1) as metric:
+                    metric.add_dimension(name="ServiceName", value=service_name)
+                    metric.add_dimension(name="AccountID", value=account_id)
