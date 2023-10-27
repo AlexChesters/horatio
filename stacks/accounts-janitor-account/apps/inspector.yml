@@ -53,7 +53,7 @@ Resources:
           QUEUE_URL:
             Fn::ImportValue: !Sub "${Environment}-horatio-report-queue-url"
           POWERTOOLS_SERVICE_NAME: horatio-inspector
-          POWERTOOLS_METRICS_NAMESPACE: !Sub "horatio/${Environment}"
+          POWERTOOLS_METRICS_NAMESPACE: !Sub "horatio/${Environment}/inspector"
           POWERTOOLS_TRACER_CAPTURE_ERROR: false
           LOG_LEVEL: INFO
   SchedulerRole:
