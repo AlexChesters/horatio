@@ -10,13 +10,13 @@ Resources:
             Principal:
               Service: codebuild.amazonaws.com
       ManagedPolicyArns:
-        - !ImportValue ci-infrastructure-codebuild-base-policy
+        - !ImportValue ci-infrastructure-codebuild-base-iam-policy
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:
         Type: CODEPIPELINE
-        Location: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+        Location: !ImportValue ci-infrastructure-artifacts-bucket-name
         Path: /artifacts/horatio/
         Packaging: NONE
         Name: build
@@ -28,7 +28,7 @@ Resources:
         Image: aws/codebuild/standard:5.0
         Type: LINUX_CONTAINER
         EnvironmentVariables:
-          - Value: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+          - Value: !ImportValue ci-infrastructure-artifacts-bucket-name
             Name: ARTIFACTS_BUCKET
             Type: PLAINTEXT
       Name: horatio
@@ -41,10 +41,10 @@ Resources:
     Properties:
       ArtifactStore:
         Type: S3
-        Location: !ImportValue ci-infrastructure-build-artifacts-bucket-name
+        Location: !ImportValue ci-infrastructure-artifacts-bucket-name
       Name: horatio
       RestartExecutionOnUpdate: true
-      RoleArn: !ImportValue ci-infrastructure-codepipeline-base-execution-role
+      RoleArn: !ImportValue ci-infrastructure-codepipeline-base-execution-iam-role
       Stages:
         - Name: Source
           Actions:
@@ -59,7 +59,7 @@ Resources:
               Name: Clone-From-GitHub
               Namespace: SourceVariables
               Configuration:
-                ConnectionArn: !ImportValue ci-infrastructure-codestar-connection
+                ConnectionArn: !ImportValue ci-infrastructure-github-codestar-connection
                 FullRepositoryId: AlexChesters/horatio
                 BranchName: main
                 OutputArtifactFormat: CODE_ZIP
@@ -93,7 +93,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-common-resources-dynamo
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/test.json
             - ActionTypeId:
@@ -109,7 +109,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-common-resources-sqs
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/sqs.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/sqs/test.json
         - Name: Deploy-Lambdas-To-Test
@@ -127,7 +127,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-inspector
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/inspector.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/inspector/test.json
             - ActionTypeId:
@@ -143,7 +143,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-recorder
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/recorder.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/recorder/test.json
             - ActionTypeId:
@@ -159,7 +159,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: test-horatio-reporter
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/reporter.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/reporter/test.json
         - Name: Deploy-Common-Resources-To-Live
@@ -177,7 +177,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-common-resources-dynamo
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/dynamo.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/dynamo/live.json
             - ActionTypeId:
@@ -193,7 +193,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-common-resources-sqs
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/sqs.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/sqs/live.json
             - ActionTypeId:
@@ -209,7 +209,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-common-resources-ses
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/common-resources/ses.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/common-resources/parameters/ses/live.json
         - Name: Deploy-Lambdas-To-Live
@@ -227,7 +227,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-inspector
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/inspector.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/inspector/live.json
             - ActionTypeId:
@@ -243,7 +243,7 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-recorder
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/recorder.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/recorder/live.json
             - ActionTypeId:
@@ -259,6 +259,6 @@ Resources:
                 ActionMode: REPLACE_ON_FAILURE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 StackName: live-horatio-reporter
-                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-role
+                RoleArn: !ImportValue ci-infrastructure-codepipeline-base-cloudformation-iam-role
                 TemplatePath: BuiltSource::stacks/accounts-janitor-account/apps/reporter.yml
                 TemplateConfiguration: BuiltSource::stacks/accounts-janitor-account/apps/parameters/reporter/live.json
