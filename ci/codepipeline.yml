@@ -45,6 +45,7 @@ Resources:
       Name: horatio
       RestartExecutionOnUpdate: true
       RoleArn: !ImportValue ci-infrastructure-codepipeline-base-execution-iam-role
+      PipelineType: V2
       Stages:
         - Name: Source
           Actions:
