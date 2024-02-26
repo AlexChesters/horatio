@@ -131,19 +131,6 @@ Resources:
                         SERVICE: BUDGETS
                         REGIONS:
                           - eu-west-1
-              - StartAt: Budgets
-                States:
-                  Budgets:
-                    Type: Task
-                    End: true
-                    Resource: arn:aws:states:::lambda:invoke
-                    Parameters:
-                      # despite the parameter being called FunctionName, it actually takes an ARN
-                      FunctionName: !GetAtt Function.Arn
-                      Payload:
-                        SERVICE: BUDGETS
-                        REGIONS:
-                          - eu-west-1
               - StartAt: IAM
                 States:
                   IAM:
