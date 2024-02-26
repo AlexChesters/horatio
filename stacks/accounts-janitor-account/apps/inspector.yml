@@ -221,21 +221,21 @@ Resources:
             Type: Parallel
             End: true
             Branches:
-              StartAt: VPC
-              States:
-                VPC:
-                  Type: Task
-                  End: true
-                  Resource: arn:aws:states:::lambda:invoke
-                  Parameters:
-                    # despite the parameter being called FunctionName, it actually takes an ARN
-                    FunctionName: !GetAtt Function.Arn
-                    Payload:
-                      SERVICE: vpc
-                      REGIONS:
-                        - eu-west-1
-                        - eu-west-2
-                        - us-east-1
+              - StartAt: VPC
+                States:
+                  VPC:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: vpc
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
