@@ -231,7 +231,7 @@ Resources:
                       # despite the parameter being called FunctionName, it actually takes an ARN
                       FunctionName: !GetAtt Function.Arn
                       Payload:
-                        SERVICE: vpc
+                        SERVICE: VPC
                         REGIONS:
                           - eu-west-1
                           - eu-west-2
