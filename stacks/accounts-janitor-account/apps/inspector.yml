@@ -56,139 +56,6 @@ Resources:
           POWERTOOLS_METRICS_NAMESPACE: !Sub "horatio/${Environment}/inspector"
           POWERTOOLS_TRACER_CAPTURE_ERROR: false
           LOG_LEVEL: INFO
-  SchedulerRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - scheduler.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      RoleName: !Sub "${Environment}-horatio-inspector-scheduler-role"
-      Policies:
-        - PolicyName: horatio-inspector-scheduler-policy
-          PolicyDocument:
-            Statement:
-              - Effect: Allow
-                Action:
-                  - lambda:InvokeFunction
-                Resource:
-                  - !GetAtt Function.Arn
-  VPCSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-vpc"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "VPC",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
-          }
-  EC2Schedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-ec2"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "EC2",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
-          }
-  BudgetsSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-budgets"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "BUDGETS",
-            "REGIONS": ["eu-west-1"]
-          }
-  IAMSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-iam"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "IAM",
-            "REGIONS": ["us-east-1"]
-          }
-  SNSSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-sns"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "SNS",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
-          }
-  CodeStarConnectionsSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-codestar-connections"
-      ScheduleExpression: cron(30 08 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "CODESTAR_CONNECTIONS",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
-          }
-  CodePipelineSchedule:
-    Type: AWS::Scheduler::Schedule
-    Properties:
-      Name: !Sub "${Environment}-horatio-inspector-codepipeline"
-      ScheduleExpression: cron(0 09 * * ? *)
-      ScheduleExpressionTimezone: Europe/London
-      FlexibleTimeWindow:
-        Mode: "OFF"
-      Target:
-        Arn: !GetAtt Function.Arn
-        RoleArn: !GetAtt SchedulerRole.Arn
-        Input: |
-          {
-            "SERVICE": "CODEPIPELINE",
-            "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
-          }
   StateMachineRole:
     Type: AWS::IAM::Role
     Properties:
@@ -236,11 +103,142 @@ Resources:
                           - eu-west-1
                           - eu-west-2
                           - us-east-1
+              - StartAt: EC2
+                States:
+                  EC2:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: EC2
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
+              - StartAt: Budgets
+                States:
+                  Budgets:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: BUDGETS
+                        REGIONS:
+                          - eu-west-1
+              - StartAt: Budgets
+                States:
+                  Budgets:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: BUDGETS
+                        REGIONS:
+                          - eu-west-1
+              - StartAt: IAM
+                States:
+                  IAM:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: IAM
+                        REGIONS:
+                          - us-east-1
+              - StartAt: SNS
+                States:
+                  SNS:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: SNS
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
+              - StartAt: CodeStarConnections
+                States:
+                  CodeStarConnections:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: CODESTAR_CONNECTIONS
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
+              - StartAt: CodePipeline
+                States:
+                  CodePipeline:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: CODEPIPELINE
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
+  SchedulerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - scheduler.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      RoleName: !Sub "${Environment}-horatio-inspector-scheduler-role"
+      Policies:
+        - PolicyName: horatio-inspector-scheduler-policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - states:StartExecution
+                Resource:
+                  - !Ref StateMachine
+  Schedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "${Environment}-horatio-inspector"
+      ScheduleExpression: cron(0 09 * * ? *)
+      ScheduleExpressionTimezone: Europe/London
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      Target:
+        Arn: !Ref StateMachine
+        RoleArn: !GetAtt SchedulerRole.Arn
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      MetricName: Errors
-      Namespace: AWS/Lambda
+      Namespace: AWS/States
+      MetricName: ExecutionsFailed
       ComparisonOperator: GreaterThanThreshold
       EvaluationPeriods: 1
       Period: 60
@@ -251,5 +249,5 @@ Resources:
       AlarmActions:
         - !ImportValue notification-topic
       Dimensions:
-        - Name: FunctionName
-          Value: !Ref Function
+        - Name: StateMachineArn
+          Value: !Ref StateMachine
