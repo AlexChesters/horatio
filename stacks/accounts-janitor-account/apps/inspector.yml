@@ -189,6 +189,53 @@ Resources:
             "SERVICE": "CODEPIPELINE",
             "REGIONS": ["eu-west-1", "eu-west-2", "us-east-1"]
           }
+  StateMachineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+      Policies:
+        - PolicyName: state-machine-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+                - Effect: Allow
+                  Action:
+                    - lambda:InvokeFunction
+                  Resource:
+                    - !GetAtt Function.Arn
+  StateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: !Sub "${Environment}-horatio-inspector"
+      RoleArn: !GetAtt StateMachineRole.Arn
+      Definition:
+        StartAt: InvokeLambdas
+        States:
+          InvokeLambdas:
+            Type: Parallel
+            End: true
+            Branches:
+              StartAt: VPC
+              States:
+                VPC:
+                  Type: Task
+                  End: true
+                  Resource: arn:aws:states:::lambda:invoke
+                  Parameters:
+                    # despite the parameter being called FunctionName, it actually takes an ARN
+                    FunctionName: !GetAtt Function.Arn
+                    Payload:
+                      SERVICE: vpc
+                      REGIONS:
+                        - eu-west-1
+                        - eu-west-2
+                        - us-east-1
   ErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
