@@ -28,11 +28,11 @@ def find_access_keys_of_old_age(client, region):
             now = datetime.now(timezone.utc)
             delta = now - access_key_create_date
 
-            if delta.days > 90:
+            if delta.days > 365:
                 results.append({
                     "rule_name": "iam_user_access_key_age",
                     "report": {
-                        "message": f"IAM user has an access key older than 90 days ({delta.days})",
+                        "message": f"IAM user has an access key older than 365 days ({delta.days})",
                         "remedy": "Rotate the access key.",
                         "resource_id": user["UserName"],
                         "region": region

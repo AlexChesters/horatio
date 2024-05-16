@@ -55,7 +55,7 @@ class IAMTests(unittest.TestCase):
                 {
                     "rule_name": "iam_user_access_key_age",
                     "report": {
-                        "message": "IAM user has an access key older than 90 days (366)",
+                        "message": "IAM user has an access key older than 365 days (366)",
                         "remedy": "Rotate the access key.",
                         "resource_id": "some-user",
                         "region": "eu-west-1"
