@@ -28,7 +28,7 @@ Resources:
       Threshold: 0
       ComparisonOperator: GreaterThanThreshold
       AlarmActions:
-        - !ImportValue notification-topic
+        - !ImportValue notification-topic-arn
   ReportQueue:
     Type: AWS::SQS::Queue
     DeletionPolicy: Delete
