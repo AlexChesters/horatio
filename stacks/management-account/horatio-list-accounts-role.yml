@@ -34,3 +34,8 @@ Resources:
                   - organizations:ListAccounts
                 Resource:
                   - "*"
+              - Effect: Allow
+                Action:
+                  - cloudformation:ListStackInstances
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:cloudformation:eu-west-1:${AWS::AccountId}:stackset/horatio-inspection-role:*"
