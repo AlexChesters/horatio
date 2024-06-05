@@ -7,8 +7,8 @@ from aws_lambda_powertools import Logger, Tracer, Metrics, single_metric
 from aws_lambda_powertools.metrics import MetricUnit
 
 from inspector.services import budgets, vpc, ec2, iam, sns, codestar_connections, codepipeline
-
-from inspector.utils.flatten import flatten
+from inspector.accounts.get_accounts_to_inspect import get_accounts_to_inspect
+from inspector.utils.assume_role import assume_role
 
 MANAGEMENT_ACCOUNT_ID = "008356366354"
 
@@ -26,14 +26,6 @@ logger = Logger()
 tracer = Tracer()
 metrics = Metrics()
 
-def assume_role(role_arn):
-    sts_client = boto3.client("sts")
-    assumed_role_object = sts_client.assume_role(
-        RoleArn=role_arn,
-        RoleSessionName="horatio-inspector"
-    )
-    return assumed_role_object["Credentials"]
-
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(log_event=True)
 def handler(event, _context):
@@ -43,37 +35,10 @@ def handler(event, _context):
 
     service = SERVICE_MAP[service_name]
 
-    list_accounts_credentials = assume_role("arn:aws:iam::008356366354:role/horatio-list-accounts-role")
+    accounts_to_inspect = get_accounts_to_inspect()
 
-    organisations_client = boto3.client(
-        "organizations",
-        aws_access_key_id=list_accounts_credentials["AccessKeyId"],
-        aws_secret_access_key=list_accounts_credentials["SecretAccessKey"],
-        aws_session_token=list_accounts_credentials["SessionToken"]
-    )
-    organisation_accounts_paginator = organisations_client.get_paginator("list_accounts")
-
-    organisation_accounts_results = [
-        result["Accounts"]
-        for result in organisation_accounts_paginator.paginate()
-    ]
-
-    organisation_accounts = flatten(organisation_accounts_results)
-
-    for account in organisation_accounts:
-        account_id = str(account["Id"])
-        account_name = account["Name"]
-        account_status = account["Status"]
-
-        if account_status == "SUSPENDED":
-            logger.info(f"ignoring account {account_name} as it is suspended")
-            continue
-
-        logger.info(f"processing account {account_name} ({account_id})")
-
-        if account_id == MANAGEMENT_ACCOUNT_ID:
-            logger.info(f"{account_name} is management account, skipping")
-            continue
+    for account_id in accounts_to_inspect:
+        logger.info(f"processing account {account_id}")
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
 
