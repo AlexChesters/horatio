@@ -1,0 +1,7 @@
+ignored_resources:
+  - "arn:aws:sns:eu-west-1:637423502760:account-created-dce"
+  - "arn:aws:sns:eu-west-1:637423502760:account-reset-complete-dce"
+  - "arn:aws:sns:eu-west-1:637423502760:alarms-dce"
+  - "arn:aws:sns:eu-west-1:637423502760:lease-locked-dce"
+  - "arn:aws:sns:eu-west-1:637423502760:account-deleted-dce"
+  - "arn:aws:sns:eu-west-1:637423502760:lease-removed-dce"

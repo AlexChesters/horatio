@@ -10,7 +10,7 @@ install:
 	)
 
 run:
-	AWS_PROFILE=accounts-janitor poetry run python3 recorder/main.py
+	AWS_PROFILE=accounts-janitor TABLE_NAME=test-horatio-report-table POWERTOOLS_METRICS_NAMESPACE=horatio/test/recorder poetry run python3 recorder/run.py
 
 test: install
 	( \
