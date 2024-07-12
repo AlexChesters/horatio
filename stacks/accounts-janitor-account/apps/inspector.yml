@@ -189,6 +189,21 @@ Resources:
                           - eu-west-1
                           - eu-west-2
                           - us-east-1
+              - StartAt: CodeBuild
+                States:
+                  CodePipeline:
+                    Type: Task
+                    End: true
+                    Resource: arn:aws:states:::lambda:invoke
+                    Parameters:
+                      # despite the parameter being called FunctionName, it actually takes an ARN
+                      FunctionName: !GetAtt Function.Arn
+                      Payload:
+                        SERVICE: CODEBUILD
+                        REGIONS:
+                          - eu-west-1
+                          - eu-west-2
+                          - us-east-1
   SchedulerRole:
     Type: AWS::IAM::Role
     Properties:

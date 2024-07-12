@@ -6,7 +6,7 @@ import boto3
 from aws_lambda_powertools import Logger, Tracer, Metrics, single_metric
 from aws_lambda_powertools.metrics import MetricUnit
 
-from inspector.services import budgets, vpc, ec2, iam, sns, codestar_connections, codepipeline
+from inspector.services import budgets, vpc, ec2, iam, sns, codestar_connections, codepipeline, codebuild
 from inspector.accounts.get_accounts_to_inspect import get_accounts_to_inspect
 from inspector.utils.assume_role import assume_role
 
@@ -19,7 +19,8 @@ SERVICE_MAP = {
     "IAM": iam,
     "SNS": sns,
     "CODESTAR_CONNECTIONS": codestar_connections,
-    "CODEPIPELINE": codepipeline
+    "CODEPIPELINE": codepipeline,
+    "CODEBUILD": codebuild
 }
 
 logger = Logger()
