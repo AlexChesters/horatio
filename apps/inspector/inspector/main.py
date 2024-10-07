@@ -28,7 +28,7 @@ tracer = Tracer()
 metrics = Metrics()
 
 @tracer.capture_lambda_handler
-@logger.inject_lambda_context(log_event=True)
+@logger.inject_lambda_context(log_event=True, clear_state=True)
 def handler(event, _context):
     sqs = boto3.resource("sqs")
     queue = sqs.Queue(os.environ["QUEUE_URL"])
@@ -39,6 +39,7 @@ def handler(event, _context):
     accounts_to_inspect = get_accounts_to_inspect()
 
     for account_id in accounts_to_inspect:
+        logger.append_keys(account_id=account_id)
         logger.info(f"processing account {account_id}")
 
         target_account_credentials = assume_role(f"arn:aws:iam::{account_id}:role/horatio-inspection-target-account-role")
