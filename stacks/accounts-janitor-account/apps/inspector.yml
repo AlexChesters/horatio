@@ -55,8 +55,7 @@ Resources:
           POWERTOOLS_SERVICE_NAME: horatio-inspector
           POWERTOOLS_METRICS_NAMESPACE: !Sub "horatio/${Environment}/inspector"
           POWERTOOLS_TRACER_CAPTURE_ERROR: false
-          # LOG_LEVEL: INFO
-          LOG_LEVEL: DEBUG
+          LOG_LEVEL: INFO
   StateMachineRole:
     Type: AWS::IAM::Role
     Properties:
