@@ -19,15 +19,17 @@ def find_default_vpcs(client, region):
 
     for vpc in vpc_results:
         vpc_id = vpc["VpcId"]
-        logger.debug(f"vpc id: {vpc_id}")
+        is_default = vpc["IsDefault"]
 
-        if vpc["IsDefault"]:
+        logger.debug(f"vpc id: {vpc_id}, is default: {is_default}")
+
+        if is_default:
             results.append({
                 "rule_name": "default_vpc_exists",
                 "report": {
                     "message": "Default VPC exists in account",
                     "remedy": "Delete the default VPC, replace with a custom one if a VPC is needed.",
-                    "resource_id": vpc["VpcId"],
+                    "resource_id": vpc_id,
                     "region": region
                 }
             })
