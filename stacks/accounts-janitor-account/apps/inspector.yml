@@ -192,7 +192,7 @@ Resources:
                           - us-east-1
               - StartAt: CodeBuild
                 States:
-                  CodePipeline:
+                  CodeBuild:
                     Type: Task
                     End: true
                     Resource: arn:aws:states:::lambda:invoke
