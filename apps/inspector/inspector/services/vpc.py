@@ -15,7 +15,12 @@ def find_default_vpcs(client, region):
         for result in paginator.paginate()
     ])
 
+    logger.debug(f"found {len(vpc_results)} vpcs in {region}")
+
     for vpc in vpc_results:
+        vpc_id = vpc["VpcId"]
+        logger.debug(f"vpc id: {vpc_id}")
+
         if vpc["IsDefault"]:
             results.append({
                 "rule_name": "default_vpc_exists",
