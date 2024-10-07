@@ -5,7 +5,7 @@ from inspector.utils.flatten import flatten
 
 logger = Logger()
 
-def find_deprecated_codebuild_images(client, region, account_id):
+def find_deprecated_codebuild_images(client, region):
     results = []
 
     current_images = client.list_curated_environment_images()
@@ -53,14 +53,6 @@ def inspect(credentials, region):
         aws_session_token=credentials["SessionToken"]
     )
 
-    account_id = boto3.client(
-        "sts",
-        region_name=region,
-        aws_access_key_id=credentials["AccessKeyId"],
-        aws_secret_access_key=credentials["SecretAccessKey"],
-        aws_session_token=credentials["SessionToken"]
-    ).get_caller_identity().get("Account")
-
-    results.extend(find_deprecated_codebuild_images(client, region, account_id))
+    results.extend(find_deprecated_codebuild_images(client, region))
 
     return results
